@@ -86,7 +86,7 @@ export async function create(options) {
       NFTs.unshift(NFT)
     }
     console.log('Created')
-    return await Assets.bulkcreate(NFTs)
+    return await Assets.bulkCreate(NFTs)
   } catch (e) {
     console.log(e)
     if (e instanceof ApiError) throw e

@@ -52,10 +52,8 @@ export default function MainHome() {
               <div className="text-md">NFT Marketplace</div>
             </div>
             <div className="p-3 sm:p-4 flex items-center space-x-3 border border-stone-100 rounded-xl shadow-stone-300/80 shadow-lg">
-              <div className="h-6 w-6 bg-alma border border-stone-100 rounded-full shadow-stone-300/80 shadow-lg" />
+              <div className="font-semibold">Buy & Sell NFTs</div>
               <div className="h-6 w-6 bg-illini-blue border border-stone-100 rounded-full shadow-stone-300/80 shadow-lg" />
-              <div className="h-6 w-6 bg-cloud border border-stone-100 rounded-full shadow-stone-300/80 shadow-lg" />
-              <div>Buy/Sell NFTs</div>
               <div className="h-6 w-6 bg-illini-orange border border-stone-100 rounded-full shadow-stone-300/80 shadow-lg" />
             </div>
           </div>
