@@ -41,10 +41,10 @@ export default function MainHome() {
               <div className="h-16 w-16 m-auto bg-stone-200 border border-stone-100 rounded-full" />
               <div className="py-4">
                 <div className="text-lg font-semibold">Disruption Lab</div>
-                <div className="text-neutral-400 text-sm">5 credited skills</div>
+                <div className="text-neutral-400 text-sm">22 credited skills</div>
               </div>
               <div className="pt-10">
-                <a href="https://skill.iblockcore.com" className="inline-block py-2 px-5 text-white bg-blue-500 rounded-full shadow-stone-300/80 shadow-lg">Skills Wallet</a>
+                <a href="https://skill.iblockcore.com" className="inline-block py-2 px-5 text-white bg-blue-500 rounded-full shadow-stone-300/80 shadow-lg">Get Skills</a>
               </div>
             </div>
           </div>
@@ -58,7 +58,7 @@ export default function MainHome() {
               <div className="h-6 w-6 bg-illini-orange border border-stone-100 rounded-full shadow-stone-300/80 shadow-lg" />
               <div className="grow" />
               <div>
-                <a href="https://skill.iblockcore.com" className="inline-block py-1 px-3 text-white bg-illini-orange rounded-full shadow-stone-300/80 shadow-lg">Buy & Sell NFTs</a>
+                <a href="https://nft.iblockcore.com" className="inline-block py-1 px-3 text-white bg-illini-orange rounded-full shadow-stone-300/80 shadow-lg">Buy & Sell NFTs</a>
               </div>
             </div>
           </div>
@@ -71,7 +71,7 @@ export default function MainHome() {
                 <img src={blockchainImage} className="h-40 m-auto" />
               </div>
               <div className="pt-6 text-center">
-                <a href="https://skill.iblockcore.com" className="inline-block py-2 px-5 text-white bg-blue-500 rounded-full shadow-stone-300/80 shadow-lg">Explore Now</a>
+                <a href="https://iblockcore.com/explorer" className="inline-block py-2 px-5 text-white bg-blue-500 rounded-full shadow-stone-300/80 shadow-lg">Explore Now</a>
               </div>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function MainHome() {
             <div className="pt-4 text-alma text-3xl font-bold">Blockchain Summit 2022</div>
             <div className="pt-2 text-neutral-500 text-md">The first annual blockchain summit gathering the best of the blockchain ecosystem around University of Illinois to celebrate and share its progressions.</div>
             <div className="pt-8 pb-4 text-center">
-              <a href="https://summit.iblockcore.com" className="inline-block py-4 px-6 text-white text-lg font-semibold bg-blue-500 rounded-full shadow-stone-300/80 shadow-lg">Join the Summit</a>
+              <a href="https://summit.iblockcore.com" className="inline-block py-4 px-6 text-white text-lg font-semibold bg-blue-500 rounded-full shadow-stone-300/80 shadow-lg">Day of the Summit</a>
             </div>
           </div>
         </div>
