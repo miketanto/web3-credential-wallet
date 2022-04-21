@@ -6,6 +6,9 @@ export const MSAL_CONFIG: Configuration = {
   auth: {
     authority: `https://login.microsoftonline.com/${AADTenantId as string}`,
     clientId: AADClientId as string,
+    redirectUri: '/', // Points to window.location.origin. You must register this URI on Azure Portal/App Registration.
+    postLogoutRedirectUri: '/', // Indicates the page to navigate after logout. // https://iblockcore.com/profile
+    navigateToLoginRequestUrl: false, // If "true", will navigate back to the original request location before processing the auth code response.
   },
   cache: {
     // By default, MSAL.js uses sessionStorage, which doesn't allow the session to be shared between tabs.
