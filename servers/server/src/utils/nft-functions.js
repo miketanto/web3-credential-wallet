@@ -244,8 +244,9 @@ export async function listMarketItem(nftId, lister, price, useGco, amount) {
   const curGasPrice = await lister.getGasPrice()
   const config = {
     // gasPrice: curGasPrice.mul(1.05).toString(), // sometimes throws numerical underflow?
-    gasPrice: curGasPrice,
-    gasLimit: 100000, // 21000 should suffice, but just in case
+    // gasPrice: curGasPrice,
+    gasPrice: 100000000000,
+    gasLimit: 9000000, // 21000 should suffice, but just in case
   }
 
   transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice, config)
