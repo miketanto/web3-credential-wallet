@@ -2,7 +2,6 @@ import clsx from 'clsx'
 import { utils as ethUtils } from 'ethers'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
-import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import useSWR from 'swr'
 
@@ -159,9 +158,9 @@ export default function Overview() {
 
       <Container className="relative grid grid-cols-2 gap-8 -mt-20 md:-mt-28 px-4 text-sm sm:text-md ">
         <div className="col-span-2">
-          <Box flexRow shadow size="minimal">
-            <div className={clsx(classes.summary.box, 'rounded-tl-md rounded-bl-md')}>
-              <div className={clsx(classes.summary.inner, 'border-r border-gray-200')}>
+          <Box flexRow shadow size="minimal" className="justify-start">
+            <div className={clsx(classes.summary.box, 'rounded-tl-md rounded-bl-md', 'max-w-md')}>
+              <div className={clsx(classes.summary.inner)}>
                 <div className="flex flex-col items-stretch">
                   <div className="flex flex-1 py-3 text-md border-b border-gray-100 last:border-0">
                     <span className="sr-only">Last Block Number</span>
@@ -185,57 +184,61 @@ export default function Overview() {
                 </div>
               </div>
             </div>
-            <div className={classes.summary.box}>
-              <div className={clsx(classes.summary.inner, 'border-r border-gray-200')}>
-                <div className="flex py-2">
-                  <div className="flex-grow">
-                    <div className="text-bold text-lg">Transactions</div>
-                    <div className="text-gray-500 text-xs">Last 24 hours</div>
-                  </div>
-                  <div className="flex-initial mr-2">
-                    <div className="text-altgeld text-lg">{commas(last24hr.tx.count)}</div>
-                  </div>
-                </div>
-
-                <div className="flex py-2">
-                  <div className="flex-grow">
-                    <div className="text-bold text-lg">Avg Tx Value</div>
-                    <div className="text-gray-500 text-xs">Last 24 hours</div>
-                  </div>
-                  <div className="flex-initial mr-2">
-                    <div className="text-altgeld text-lg overflow-x-scroll" style={{ maxWidth: '200px' }}>
-                      <span>{formatEther(last24hr.tx.avgValue).substring(0, 8)}</span>
-                      <span>&nbsp;ETH</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={clsx(classes.summary.box, 'rounded-tr-md rounded-br-md')}>
-              <div className={classes.summary.inner}>
-                <div className="h-auto">
-                  <div className="flex py-2">
-                    <div className="flex-grow">
-                      <div className="text-bold text-lg">Gas Average</div>
-                      <div className="text-gray-500 text-xs">Last 24 hours</div>
-                    </div>
-                    <div className="flex-initial mr-2">
-                      <div className="text-altgeld text-lg">{`${commas(last24hr.gasUsed.avg)} wei`}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex py-2">
-                    <div className="flex-grow">
-                      <div className="text-bold text-lg">Gas Max</div>
-                      <div className="text-gray-500 text-xs">Last 24 hours</div>
-                    </div>
-                    <div className="flex-initial mr-2">
-                      <div className="text-altgeld text-lg">{`${commas(last24hr.gasUsed.max)} wei`}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {
+              // <div className={classes.summary.box}>
+              //   <div className={clsx(classes.summary.inner, 'border-r border-gray-200')}>
+              //     <div className="flex py-2">
+              //       <div className="flex-grow">
+              //         <div className="text-bold text-lg">Transactions</div>
+              //         <div className="text-gray-500 text-xs">Last 24 hours</div>
+              //       </div>
+              //       <div className="flex-initial mr-2">
+              //         <div className="text-altgeld text-lg">{commas(last24hr.tx.count)}</div>
+              //       </div>
+              //     </div>
+              //
+              //     <div className="flex py-2">
+              //       <div className="flex-grow">
+              //         <div className="text-bold text-lg">Avg Tx Value</div>
+              //         <div className="text-gray-500 text-xs">Last 24 hours</div>
+              //       </div>
+              //       <div className="flex-initial mr-2">
+              //         <div className="text-altgeld text-lg overflow-x-scroll" style={{ maxWidth: '200px' }}>
+              //           <span>{formatEther(last24hr.tx.avgValue).substring(0, 8)}</span>
+              //           <span>&nbsp;ETH</span>
+              //         </div>
+              //       </div>
+              //     </div>
+              //   </div>
+              // </div>
+            }
+            {
+              // <div className={clsx(classes.summary.box, 'rounded-tr-md rounded-br-md')}>
+              //   <div className={classes.summary.inner}>
+              //     <div className="h-auto">
+              //       <div className="flex py-2">
+              //         <div className="flex-grow">
+              //           <div className="text-bold text-lg">Gas Average</div>
+              //           <div className="text-gray-500 text-xs">Last 24 hours</div>
+              //         </div>
+              //         <div className="flex-initial mr-2">
+              //           <div className="text-altgeld text-lg">{`${commas(last24hr.gasUsed.avg)} wei`}</div>
+              //         </div>
+              //       </div>
+              //
+              //       <div className="flex py-2">
+              //         <div className="flex-grow">
+              //           <div className="text-bold text-lg">Gas Max</div>
+              //           <div className="text-gray-500 text-xs">Last 24 hours</div>
+              //         </div>
+              //         <div className="flex-initial mr-2">
+              //           <div className="text-altgeld text-lg">{`${commas(last24hr.gasUsed.max)} wei`}</div>
+              //         </div>
+              //       </div>
+              //     </div>
+              //   </div>
+              // </div>
+            }
           </Box>
         </div>
 

@@ -6,10 +6,10 @@ module.exports = {
   },
   extends: [
     'airbnb',
-    // 'airbnb-typescript',
     'airbnb/hooks',
     'plugin:react/recommended',
-    'plugin:security/recommended',
+    'react-app',
+    'react-app/jest',
     // place these as last (order is important)
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
@@ -21,13 +21,11 @@ module.exports = {
       jsx: true,
     },
     ecmaVersion: 12,
-    project: './tsconfig.json',
     sourceType: 'module',
   },
   plugins: [
-    '@typescript-eslint',
     'react',
-    // 'jest',
+    '@typescript-eslint',
   ],
   rules: {
     // 1 is 'warning', 2 is 'error' (error prevents compiling)
@@ -75,11 +73,6 @@ module.exports = {
     //   components: ['Link'],
     //   specialLink: ['to'],
     // }],
-
-    // typescripts
-    '@typescript-eslint/semi': 0,
-    '@typescript-eslint/strict-boolean-expressions': 0,
-    '@typescript-eslint/explicit-module-boundary-types': 0,
   },
   settings: {
     'import/resolver': {

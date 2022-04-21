@@ -1,9 +1,7 @@
 import { utils as ethUtils } from 'ethers'
 import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
-import { toast } from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-// import ReactPaginate from 'react-paginate'
 
 import Box from '../../components/Box'
 import Container from '../../components/Container'

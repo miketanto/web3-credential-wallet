@@ -3,9 +3,6 @@ import {
   constants, Contract, providers, utils, ContractInterface,
 } from 'ethers'
 
-import { tokenABIS } from '../constants/tokens'
-import Token from '../entities/Token'
-
 const { AddressZero } = constants
 // const { JsonRpcSigner, Web3Provider } = providers // imported for types
 const { getAddress } = utils
@@ -74,14 +71,4 @@ export function getContract(
   }
 
   return new Contract(address, ABI, getProviderOrSigner(library, account))
-}
-
-/**
- * @param {Token} token
- * @return {string}
- */
-export function getTokenABI(token: Token): string {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  return tokenABIS[token.symbol]
 }

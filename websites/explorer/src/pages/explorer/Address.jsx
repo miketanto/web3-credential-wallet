@@ -1,4 +1,4 @@
-import { formatDistanceToNowStrict } from 'date-fns'
+// import { formatDistanceToNowStrict } from 'date-fns'
 import { utils as ethUtils } from 'ethers'
 import hljs from 'highlight.js'
 import hljsDefineSolidity from 'highlightjs-solidity'
@@ -11,8 +11,7 @@ import Web3Utils from 'web3-utils'
 import Box from '../../components/Box'
 import Container from '../../components/Container'
 import Pill from '../../components/Pill'
-import { getContractCode } from '../../states/api'
-import { useGetBalanceOfAddress } from '../../states-new/slices/addressAPI'
+// import { getContractCode } from '../../states/api'
 import getFromCoreAPI from '../../utils/getFromCoreAPI'
 
 const { formatEther } = ethUtils
@@ -82,8 +81,6 @@ export default function Home() {
   const [balance, setBalance] = useState(0)
   const { address } = useParams()
 
-  // const { balance, balanceError, balanceIsLoading } = useGetBalanceOfAddress(address)
-
   useEffect(() => {
     // MetaMask is active
     if (window.ethereum) setWeb3(new Web3(window.ethereum))
@@ -107,7 +104,7 @@ export default function Home() {
           setContractCode(null)
         } else {
           setIsContract(true)
-          setContractCode(getContractCode(address))
+          // setContractCode(getContractCode(address))
         }
       })
       .catch((err) => {

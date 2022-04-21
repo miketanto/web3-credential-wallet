@@ -1,0 +1,98 @@
+version: '3.8'
+services:
+  # Indexer db running on PRODUCTION chain
+  indexed-db:
+    container_name: $DB_HOST # indexed-db
+    image: postgres:14-alpine
+    restart: always # restart on boot; prev: `on-failure`
+    ports:
+      - $DB_EXTERNAL_PORT:5432
+    volumes:
+      - pg-data-prod:/var/lib/postgresql/data/production
+      - ./scripts:/docker-entrypoint-initdb.d # for init postgres (create extension before creating tables)
+    healthcheck:
+      test: ['CMD-SHELL', "pg_isready -U $DB_USERNAME"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      NODE_ENV: production
+      PGDATA: /var/lib/postgresql/data/production/
+      PGHOST: $DB_HOST
+      PGUSER: $DB_USERNAME
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+    networks:
+      - production
+
+  # Indexer db running on DEVELOPMENT chain
+  indexed-db-dev:
+    container_name: $DB_DEV_HOST # indexed-db-dev
+    image: postgres:14-alpine
+    restart: always
+    ports:
+      - $DB_DEV_EXTERNAL_PORT:5432
+    volumes:
+      - pg-data-dev:/var/lib/postgresql/data/development
+      - ./scripts:/docker-entrypoint-initdb.d # for init postgres (create extension before creating tables)
+    healthcheck:
+      test: ['CMD-SHELL', "pg_isready -U $DB_DEV_USERNAME"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      NODE_ENV: development
+      PGDATA: /var/lib/postgresql/data/development/
+      PGHOST: $DB_DEV_HOST
+      PGUSER: $DB_DEV_USERNAME
+      POSTGRES_DB: $DB_DEV_NAME
+      POSTGRES_USER: $DB_DEV_USERNAME
+      POSTGRES_PASSWORD: $DB_DEV_PASSWORD
+    networks:
+      - development
+
+  # Indexer on PRODUCTION chain
+  indexer:
+    build:
+      context: .
+      args:
+        NODE_ENV: production
+    restart: always
+    depends_on:
+      indexed-db:
+        condition: service_healthy # container runs only after Postgres' health check returns healthy
+    volumes:
+      - ./:/usr/src/app/production
+      - /usr/src/app/production/node_modules
+    environment:
+      NODE_ENV: production
+    networks:
+      - production
+
+  # Indexer on DEVELOPMENT chain
+  indexer-dev:
+    build:
+      context: .
+      args:
+        NODE_ENV: development
+    restart: always
+    depends_on:
+      indexed-db-dev:
+        condition: service_healthy # container runs only after Postgres' health check returns healthy
+    volumes:
+      - ./:/usr/src/app/development
+      - /usr/src/app/development/node_modules
+    environment:
+      NODE_ENV: development
+    networks:
+      - development
+
+# persistent named volumes
+volumes:
+  pg-data-prod:
+  pg-data-dev:
+
+networks:
+  production:
+  development:

@@ -1,13 +1,13 @@
-**/node_modules
+node_modules
 # build artefacts
-**/dist/*
-**/coverage/*
+dist/*
+coverage/*
 # data definition files
 **/*.d.ts
 # 3rd party libs
-**/src/public/
+/src/public/
 # custom definition files
-**/src/types/
+/src/types/
 
 
 node_modules
@@ -19,10 +19,3 @@ coverage
 __snapshots__
 
 # .eslintrc.js
-
-**/dist/**
-**/build/**
-**/node_modules/**
-**/*.test.{js,jsx,ts,tsx}
-**/*.spec.{js,jsx,ts,tsx}
-**/config-overrides.js

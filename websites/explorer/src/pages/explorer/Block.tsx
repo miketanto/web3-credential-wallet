@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { utils as ethUtils } from 'ethers'
-import React, { useState } from 'react'
+import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link, useParams } from 'react-router-dom'
 import useSWR from 'swr'
@@ -69,7 +69,7 @@ type BlockHeightPayload = {
 export default function Home() {
   const { blockNumber: _blockNumber } = useParams<any>()
 
-  const blockNumber = typeof _blockNumber === 'string' ? parseInt(_blockNumber) : 0
+  const blockNumber = parseInt(_blockNumber)
 
   const { data: blockHeightData, error: blockHeightError }: SWRResponse<BlockHeightPayload, Error> = useSWR<BlockHeightPayload>(
     `${process.env.REACT_APP_API_URL}/block/height`,

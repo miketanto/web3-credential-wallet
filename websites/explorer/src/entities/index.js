@@ -1,6 +1,0 @@
-export { default as BaseCurrency } from './BaseCurrency'
-export { default as CurrencyAmount } from './CurrencyAmount'
-export { default as Ether } from './Ether'
-export { default as Fraction } from './Fraction'
-export { default as NativeCurrency } from './NativeCurrency'
-export { default as Token } from './Token'

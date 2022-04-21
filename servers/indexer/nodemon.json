@@ -1,0 +1,21 @@
+{
+  "delay": 5000,
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules",
+    "logs"
+  ],
+  "events": {
+    "restart": "osascript -e 'display notification \"App restarted due to:\n'$FILENAME'\" with title \"nodemon\"'"
+  },
+  "execMap": {
+    "js": "node --harmony"
+  },
+  "ext": "js,json",
+  "restartable": "rs",
+  "watch": [
+    "test/fixtures/",
+    "test/samples/"
+  ],
+  "verbose": true
+}

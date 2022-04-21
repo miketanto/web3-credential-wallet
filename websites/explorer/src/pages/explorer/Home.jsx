@@ -1,11 +1,9 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import {
-  Navigate, Route, Routes,
+  Redirect, Route, Switch, useRouteMatch,
 } from 'react-router-dom'
 
-import useActiveWeb3React from '../../hooks/useActiveWeb3React'
-import { switchChainForMetaMask } from '../../hooks/web3'
 import Address from './Address'
 import Block from './Block'
 import Blocks from './Blocks'
@@ -14,12 +12,8 @@ import Transaction from './Transaction'
 import Transactions from './Transactions'
 
 export default function ExplorerHome() {
-  const { active } = useActiveWeb3React()
-
-  if (active) {
-    // Ignore promise for this function
-    switchChainForMetaMask()
-  }
+  const { path } = useRouteMatch() // path = /app
+  console.log(path)
 
   return (
     <>
@@ -27,21 +21,35 @@ export default function ExplorerHome() {
         <title>Explorer - iBlock by DLab</title>
       </Helmet>
 
-      <Routes>
-        <Route path="/explorer">
-          <Route index element={<Overview />} />
-          {/* overview ==> home */}
-          <Route path="/overview" element={<Navigate to="/" />} />
-          <Route path="/blocks" element={<Blocks />} />
-          <Route path="/txs" element={<Transactions />} />
-          {/* These use queries, so remove `exact` and `strict` flags */}
-          <Route path="/block/:blockNumber" element={<Block />} />
-          <Route path="/tx/:hash" element={<Transaction />} />
-          <Route path="/address/:address" element={<Address />} />
-          {/* Catch all other urls & redirect to /app */}
-          <Route path="*" element={<Navigate to="/explorer" />} />
+      <Switch>
+        <Route exact sensitive strict path={path}>
+          <Overview />
         </Route>
-      </Routes>
+        {/* overview ==> home */}
+        <Route exact sensitive strict path={`${path}/overview`}>
+          <Redirect from="*" to={path} />
+        </Route>
+        <Route exact sensitive strict path={`${path}/blocks`}>
+          <Blocks />
+        </Route>
+        <Route exact sensitive strict path={`${path}/txs`}>
+          <Transactions />
+        </Route>
+        {/* These use queries, so remove `exact` and `strict` flags */}
+        <Route sensitive path={`${path}/block/:blockNumber`}>
+          <Block />
+        </Route>
+        <Route sensitive path={`${path}/tx/:hash`}>
+          <Transaction />
+        </Route>
+        <Route sensitive path={`${path}/address/:address`}>
+          <Address />
+        </Route>
+        {/* Catch all other urls & redirect to /app */}
+        <Route>
+          <Redirect from="*" to="/explorer" />
+        </Route>
+      </Switch>
     </>
   )
 }

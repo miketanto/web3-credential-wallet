@@ -3,7 +3,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import Web3Utils from 'web3-utils'
 
 import classNames from '../../utils/classNames'
@@ -12,7 +12,7 @@ function SearchBar({
   className, shadow, size, textSize,
 }) {
   const location = useLocation()
-  const navigate = useNavigate()
+  const history = useHistory()
   const [searchInput, setSearchInput] = useState('')
   const [isMarketplace, setIsMarketplace] = useState(false)
   useEffect(() => {
@@ -24,7 +24,7 @@ function SearchBar({
 
     // Check if it's block number (digits only)
     if (/^\d+$/.test(searchInput)) {
-      navigate(`/block/${searchInput}`)
+      history.push(`/block/${searchInput}`)
       return
     }
 
@@ -33,12 +33,12 @@ function SearchBar({
     // Address: 40 (+2)
     if (Web3Utils.isAddress(searchInput)) {
       const address = searchInput.startsWith('0x') ? searchInput : `0x${searchInput}` // prepend 0x
-      navigate(`/address/${address}`)
+      history.push(`/address/${address}`)
       return
     }
 
     if (searchInput.length === 66) {
-      navigate(`/tx/${searchInput}`)
+      history.push(`/tx/${searchInput}`)
     }
   }
 
