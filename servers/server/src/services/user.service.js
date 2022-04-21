@@ -73,6 +73,24 @@ export async function address(options) {
   }
 }
 
+export async function balance(options) {
+  try {
+    const { user: { wallet } } = options
+
+    // Get idx = 1 for `nft marketplace` address associated with the user
+    const marketplaceAddr = getAddressOfWallet(wallet, 1, 1)
+    return {
+      ETH: await provider.getBalance(marketplaceAddr),
+      GCO: await GiesCoin.balanceOf(marketplaceAddr),
+      MCO: await MerchCoin.balanceOf(marketplaceAddr),
+    }
+  } catch (e) {
+    console.log(e)
+    if (e instanceof ApiError) throw e
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Internal server error')
+  }
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export async function search(options) {
   try {

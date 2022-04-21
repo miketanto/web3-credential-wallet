@@ -5,16 +5,32 @@ import validate from '../../middlewares/validate'
 import { userService } from '../../services'
 import { catchAsync, pick } from '../../utils'
 import { userValidation } from '../../validations'
+import { getWalletFromEmail } from '../../middlewares'
 
 const router = express.Router()
 
+/**
+ * Calling this route will auto-associate new user to a new wallet
+ * NOTE: this is the only auto-associating endpoint, thus it must be called before any
+ *       wallet interactions for users
+ */
 router.get(
   '/address',
   passport.authenticate('bearer', { session: false }),
   catchAsync(async (req, res, next) => {
     const { user } = req // populated by Passport.js
     const addresses = await userService.address({ user })
-    res.locals = { addresses }
+    res.locals = { addresses } // TODO: Remove redundancy by doing `res.locals = addresses` instead
+    next()
+  }),
+)
+
+router.get(
+  '/balance',
+  passport.authenticate('bearer', { session: false }),
+  getWalletFromEmail(),
+  catchAsync(async (req, res, next) => {
+    res.locals = await userService.balance({ user: req.user })
     next()
   }),
 )
