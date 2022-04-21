@@ -1,11 +1,11 @@
 import express from 'express'
 
-import validate from '../../middlewares/validate'
-import { blockService, transactionService } from '../../services'
+import validate from '../middlewares/validate'
+import { blockService, transactionService } from '../services'
 import {
   pick, catchAsync, isArray, isObject,
-} from '../../utils'
-import { blockExplorerValidation, transactionValidation } from '../../validations'
+} from '../utils'
+import { blockExplorerValidation, transactionValidation } from '../validations'
 
 const router = express.Router()
 

@@ -1,7 +1,7 @@
 import express from 'express'
 
-import { auth } from '../../middlewares'
-import { catchAsync } from '../../utils'
+import { auth } from '../middlewares'
+import { catchAsync } from '../utils'
 
 const { aadAuth, regenerateSessionAfterAuthentication } = auth
 

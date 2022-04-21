@@ -1,10 +1,10 @@
 import express from 'express'
 import passport from 'passport'
 
-import validate from '../../middlewares/validate'
-import { addressValidation } from '../../validations'
-import { pick, catchAsync } from '../../utils'
-import { addressService } from '../../services'
+import validate from '../middlewares/validate'
+import { addressValidation } from '../validations'
+import { pick, catchAsync } from '../utils'
+import { addressService } from '../services'
 
 const router = express.Router()
 

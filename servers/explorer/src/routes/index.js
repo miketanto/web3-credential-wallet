@@ -4,7 +4,7 @@ import blockRoute from './block.route'
 import transactionRoute from './transaction.route'
 import authRoute from './auth.route'
 import addressRoute from './address.route'
-import finalResponder from '../../middlewares/finalResponder'
+import finalResponder from '../middlewares/finalResponder'
 
 const router = express.Router()
 

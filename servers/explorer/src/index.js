@@ -10,7 +10,7 @@ import {
   morgan, envVars, passport as passportHelper,
 } from './config'
 import { errorConverter, errorHandler } from './middlewares/error'
-import routes from './routes/v1'
+import routes from './routes'
 import { ApiError, logger } from './utils'
 
 const app = express()
@@ -57,8 +57,8 @@ app.use(passport.session())
 // use session helper (for persistent session over server)
 app.use(session({ secret: envVars.sessionSecret, resave: true, saveUninitialized: false }))
 
-// v1 api routes (==> api.iblockcore.com/v1)
-app.use('/v1', routes)
+// v1 api routes (==> eapi.iblockcore.com/)
+app.use('/', routes)
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
