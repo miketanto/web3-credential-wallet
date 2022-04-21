@@ -86,6 +86,7 @@ module.exports = {
       // <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&family=IBM+Plex+Serif:wght@300;400;700&display=swap" />
       fontFamily: {
         // wrapping as array produces error when building
+        // "SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"
         sans: "'IBM Plex Sans', 'Helvetica Neue', 'Arial', 'sans-serif'",
         serif: "'IBM Plex Serif', 'Georgia', 'Cambria', 'Times New Roman', 'serif'",
       },

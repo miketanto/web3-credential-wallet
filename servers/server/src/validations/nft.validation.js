@@ -17,6 +17,7 @@ export const list = {
   body: {
     useGco: Joi.bool().required(),
     price: Joi.number().required(),
+    amount: Joi.number().required(),
   },
 }
 
@@ -38,13 +39,13 @@ export const create = {
     path: Joi.string().required(),
     // need to be image_url in database
     collection_id: Joi.number().required(),
-    creator: Joi.string().required().custom(addressFilter),
-    nftContract: Joi.string().required().custom(addressFilter),
+    creator: Joi.string().optional().custom(addressFilter),
+    nftContract: Joi.string().optional().custom(addressFilter),
     royalty: Joi.string().required(),
     useGco: Joi.bool().required(),
     // currentOwner set in the service,
     listed: Joi.bool().default(false),
-    tokenId: Joi.number().required(),
+    tokenId: Joi.number().optional(),
     quantity: Joi.number().required(),
     likes: Joi.number().default(0),
     price: Joi.number().default(0),
