@@ -78,20 +78,21 @@ export async function address(options) {
     // TODO: uncomment if to mint/transfer only for new accounts
     // if (noWalletExists) {
     // Gies & Merch Coin
-    // const signedGiesCoin = GiesCoin.connect(deployer)
-    // const signedMerchCoin = MerchCoin.connect(deployer)
+    const signedGiesCoin = GiesCoin.connect(deployer)
+    const signedMerchCoin = MerchCoin.connect(deployer)
+
+    const tx1 = await signedGiesCoin.mintFor(nftMarketAddr, 100 * 10e7)
+    const tx2 = await signedMerchCoin.mintFor(nftMarketAddr, 100 * 10e7)
+    console.log(tx1)
+    console.log(tx2)
     //
-    // const tx1 = await signedGiesCoin.mintFor(nftMarketAddr, 100 * 10e7)
-    // const tx2 = await signedMerchCoin.mintFor(nftMarketAddr, 100 * 10e7)
-    // console.log(tx1)
-    // console.log(tx2)
-    //
-    // const tx3 = await deployer.sendTransaction({
-    //   to: nftMarketAddr,
-    //   // Convert currency unit from ether to wei
-    //   value: ethers.utils.parseEther('0.01'),
-    // })
-    // console.log(tx3)
+    const tx3 = await deployer.sendTransaction({
+      to: nftMarketAddr,
+      // Convert currency unit from ether to wei
+      // value: ethers.utils.parseEther('0.01'),
+      value: ethers.utils.parseEther('10'),
+    })
+    console.log(tx3)
     // // }
 
     return { skillsWallet: skillsWalletAddr, nftMarket: nftMarketAddr, nftCollectionId: collectionId }
