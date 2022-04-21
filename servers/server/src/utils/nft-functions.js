@@ -210,15 +210,16 @@ export async function mintMarketItem(url, signer, amount, royalty) {
 /**
  * Function: listMarketItem
  * Use: list an nft to E1155Market
- * @param {Object} nft
- * @param {address} lister
- * @param {uint} price
+ * @param {number} nftId
+ * @param {address} lister Signer
+ * @param {number} price
+ * @param {boolean} useGco
+ * @param {number} amount
  * @returns {items}
  * * */
 
-export async function listMarketItem(nftId, lister, account, price, useGco, amount) {
+export async function listMarketItem(nftId, lister, price, useGco, amount) {
   // verify signer
-  console.log(account)
   console.log(lister)
   const signedNFT = ERC1155NFT.connect(lister)
   const signedNFTMarket = ERC1155Market.connect(lister)
