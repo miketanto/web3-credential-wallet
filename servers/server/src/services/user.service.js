@@ -40,6 +40,7 @@ export async function address(options) {
       // wallet exists
       const walletData = walletRecords[0]
       const wallet = utils.HDNode.fromMnemonic(walletData.seed_phrase)
+      // console.log(wallet)
       addresses = getAddressOfWallet(wallet, 0, 2)
     }
 
@@ -51,8 +52,8 @@ export async function address(options) {
     const signedGiesCoin = GiesCoin.connect(deployer)
     const signedMerchCoin = MerchCoin.connect(deployer)
 
-    const tx1 = await signedGiesCoin.mintFor(100 * 10e7, nftMarketAddr)
-    const tx2 = await signedMerchCoin.mintFor(100 * 10e7, nftMarketAddr)
+    const tx1 = await signedGiesCoin.mintFor(nftMarketAddr, 100 * 10e7)
+    const tx2 = await signedMerchCoin.mintFor(nftMarketAddr, 100 * 10e7)
     console.log(tx1)
     console.log(tx2)
 
