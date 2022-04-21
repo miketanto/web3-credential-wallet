@@ -1,8 +1,13 @@
 import httpStatus from 'http-status'
 import { ethers, utils } from 'ethers'
 
+import { envVars } from '../config'
+import { provider } from '../constants'
+import { GiesCoin, MerchCoin } from '../contracts'
 import { Wallets } from '../models'
 import { getAddressOfWallet, ApiError } from '../utils'
+
+const deployer = new ethers.Wallet(envVars.RP_PRIVATE_KEY, provider)
 
 function createNewWallet() {
   return ethers.Wallet.createRandom()
@@ -20,9 +25,10 @@ export async function address(options) {
     }
 
     const walletRecords = await Wallets.findAll(queryParams)
+    const noWalletExists = !walletRecords || walletRecords.length === 0
 
     let addresses
-    if (!walletRecords || walletRecords.length === 0) {
+    if (noWalletExists) {
       // no wallet exists
       const wallet = createNewWallet()
       addresses = getAddressOfWallet(wallet, 0, 2)
@@ -37,10 +43,28 @@ export async function address(options) {
       addresses = getAddressOfWallet(wallet, 0, 2)
     }
 
-    return {
-      skillsWallet: addresses[0],
-      nftMarket: addresses[1],
-    }
+    const [skillsWalletAddr, nftMarketAddr] = addresses
+
+    // TODO: uncomment if to mint/transfer only for new accounts
+    // if (noWalletExists) {
+    // Gies & Merch Coin
+    const signedGiesCoin = GiesCoin.connect(deployer)
+    const signedMerchCoin = MerchCoin.connect(deployer)
+
+    const tx1 = await signedGiesCoin.mintFor(100 * 10e7, nftMarketAddr)
+    const tx2 = await signedMerchCoin.mintFor(100 * 10e7, nftMarketAddr)
+    console.log(tx1)
+    console.log(tx2)
+
+    const tx3 = await deployer.sendTransaction({
+      to: nftMarketAddr,
+      // Convert currency unit from ether to wei
+      value: ethers.utils.parseEther('0.01'),
+    })
+    console.log(tx3)
+    // }
+
+    return { skillsWallet: skillsWalletAddr, nftMarket: nftMarketAddr }
   } catch (e) {
     console.log(e)
     if (e instanceof ApiError) throw e
