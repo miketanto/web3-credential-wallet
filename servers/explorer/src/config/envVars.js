@@ -30,7 +30,7 @@ const envVarsSchema = Joi.object()
 
     DB_HOST: Joi.string().required().default('localhost'),
     DB_NAME: Joi.string().required().description('Database name to connect'),
-    DB_PASSWORD: Joi.string().required(),
+    DB_PASSWORD: Joi.string().optional(),
     DB_PORT: Joi.string().required(),
     DB_USER: Joi.string().required(),
 

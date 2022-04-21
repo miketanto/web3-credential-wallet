@@ -1,3 +1,5 @@
+-- RUN LIKE THIS: psql -h localhost -d iblock -U postgres -p 5432 -a -q -f scripts/init.sql
+
 -- Create type citext for hex data
 CREATE EXTENSION IF NOT EXISTS citext;
 
