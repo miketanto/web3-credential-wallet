@@ -50,8 +50,8 @@ app.use(passport.session())
 // use session helper (for persistent session over server)
 app.use(session({ secret: envVars.sessionSecret, resave: true, saveUninitialized: false }))
 
-// v1 api routes (==> api.iblockcore.com/v1)
-app.use('/v2', routes)
+// v1 api routes (==> api.iblockcore.com/)
+app.use('/', routes)
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
