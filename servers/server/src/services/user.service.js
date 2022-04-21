@@ -1,11 +1,14 @@
 import httpStatus from 'http-status'
 import { ethers, utils } from 'ethers'
 
+import Joi from 'joi'
 import { envVars } from '../config'
 import { provider } from '../constants'
 import { GiesCoin, MerchCoin } from '../contracts'
-import { Wallets } from '../models'
+import { Collections, Wallets } from '../models'
 import { getAddressOfWallet, ApiError } from '../utils'
+import { addressFilter } from '../validations/helper'
+import { erc1155nftaddress } from '../contracts/config'
 
 const deployer = new ethers.Wallet(envVars.replenish.privateKey, provider)
 
@@ -16,7 +19,7 @@ function createNewWallet() {
 // eslint-disable-next-line import/prefer-default-export
 export async function address(options) {
   try {
-    const { user: { email } } = options
+    const { user: { email, first_name: firstName, last_name: lastName } } = options
 
     const queryParams = {
       where: { email },
@@ -28,20 +31,46 @@ export async function address(options) {
     const noWalletExists = !walletRecords || walletRecords.length === 0
 
     let addresses
+    let collectionId
     if (noWalletExists) {
-      // no wallet exists
+      // NO WALLET EXISTS
+
+      // Create New Wallet
       const wallet = createNewWallet()
       addresses = getAddressOfWallet(wallet, 0, 2)
 
-      // store new wallet data (wallet.address is address 0 - `m/44'/60'/0'/0/0`)
+      // Store New Wallet Data (wallet.address is address 0 - `m/44'/60'/0'/0/0`)
       const createParams = { email, main_address: wallet.address, seed_phrase: wallet.mnemonic.phrase }
       await Wallets.create(createParams)
+
+      // Create New Collection for user
+      collectionId = await Collections.create({
+        name: `Collection by ${firstName} ${lastName}`,
+        creator: addresses[1], // use NFT address (index 1)
+        contract_address: erc1155nftaddress,
+        description: `Collection by ${firstName} ${lastName}`,
+        no_items: 0,
+        no_owners: 1,
+        floor_price: 0,
+        volume_traded: 0,
+        website: null,
+        discord: null,
+        instagram: null,
+        twitter: null,
+      }).then((result) => result.collection_id)
+        .catch((err) => { throw err })
     } else {
-      // wallet exists
+      // WALLET EXISTS
       const walletData = walletRecords[0]
       const wallet = utils.HDNode.fromMnemonic(walletData.seed_phrase)
-      // console.log(wallet)
       addresses = getAddressOfWallet(wallet, 0, 2)
+
+      // Get Associated Collection Id
+      const collectionData = await Collections.findOne({
+        where: { creator: addresses[1] },
+        raw: true,
+      })
+      collectionId = collectionData.collection_id
     }
 
     const [skillsWalletAddr, nftMarketAddr] = addresses
@@ -49,23 +78,23 @@ export async function address(options) {
     // TODO: uncomment if to mint/transfer only for new accounts
     // if (noWalletExists) {
     // Gies & Merch Coin
-    const signedGiesCoin = GiesCoin.connect(deployer)
-    const signedMerchCoin = MerchCoin.connect(deployer)
+    // const signedGiesCoin = GiesCoin.connect(deployer)
+    // const signedMerchCoin = MerchCoin.connect(deployer)
+    //
+    // const tx1 = await signedGiesCoin.mintFor(nftMarketAddr, 100 * 10e7)
+    // const tx2 = await signedMerchCoin.mintFor(nftMarketAddr, 100 * 10e7)
+    // console.log(tx1)
+    // console.log(tx2)
+    //
+    // const tx3 = await deployer.sendTransaction({
+    //   to: nftMarketAddr,
+    //   // Convert currency unit from ether to wei
+    //   value: ethers.utils.parseEther('0.01'),
+    // })
+    // console.log(tx3)
+    // // }
 
-    const tx1 = await signedGiesCoin.mintFor(nftMarketAddr, 100 * 10e7)
-    const tx2 = await signedMerchCoin.mintFor(nftMarketAddr, 100 * 10e7)
-    console.log(tx1)
-    console.log(tx2)
-
-    const tx3 = await deployer.sendTransaction({
-      to: nftMarketAddr,
-      // Convert currency unit from ether to wei
-      value: ethers.utils.parseEther('0.01'),
-    })
-    console.log(tx3)
-    // }
-
-    return { skillsWallet: skillsWalletAddr, nftMarket: nftMarketAddr }
+    return { skillsWallet: skillsWalletAddr, nftMarket: nftMarketAddr, nftCollectionId: collectionId }
   } catch (e) {
     console.log(e)
     if (e instanceof ApiError) throw e

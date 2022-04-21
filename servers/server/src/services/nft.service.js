@@ -68,7 +68,7 @@ export async function create(options) {
     const NFTs = []
     for (let i = 0; i < quantity; i++) {
       const NFT = {
-        item_id: itemId + quantity,
+        item_id: Number(itemId) + i,
         name,
         meta_url: `${envVars.ipfsBaseUrl}/${path}`,
         quantity,
@@ -121,7 +121,7 @@ export async function update(options, NFT) {
 export async function list(options, listingOptions) {
   try {
     const { user: { signer }, id } = options
-    const { price, useGco: useGCO } = listingOptions
+    const { price, useGco: useGCO, amount } = listingOptions
     const listing = await listMarketItem(id, signer, price, useGCO, amount)
     return await Assets.update(
       {
