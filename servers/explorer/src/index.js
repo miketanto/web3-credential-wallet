@@ -36,7 +36,14 @@ app.use(xss())
 app.use(compression())
 
 // enable cors
-app.use(cors())
+const corsWhitelist = ['https://iblockcore.com', 'http://localhost', 'https://illinisea.com']
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (corsWhitelist.indexOf(origin) !== -1) callback(null, true)
+    else callback(new Error('Not allowed by CORS'))
+  },
+}
+app.use(cors(corsOptions))
 app.options('*', cors())
 
 // use passport for Microsoft AAD OAuth (OpenID Connect)
