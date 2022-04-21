@@ -7,7 +7,7 @@ import { GiesCoin, MerchCoin } from '../contracts'
 import { Wallets } from '../models'
 import { getAddressOfWallet, ApiError } from '../utils'
 
-const deployer = new ethers.Wallet(envVars.RP_PRIVATE_KEY, provider)
+const deployer = new ethers.Wallet(envVars.replenish.privateKey, provider)
 
 function createNewWallet() {
   return ethers.Wallet.createRandom()
