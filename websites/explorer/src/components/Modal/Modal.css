@@ -1,0 +1,257 @@
+/* Colors */
+:root {
+    --green: #3d493e;
+    --terracota: #9c5845;
+    --offwhite: #e2dacb;
+}
+.itemTitle{
+    font-size:1.2rem;
+    font-weight:500;
+    padding-bottom:2vh;
+}
+
+.itemSubTitle{
+    font-size:0.9rem;
+    font-weight:200;
+}
+/* Background fade darker animation */
+@keyframes bgFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bgFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Background */
+.modalOverlayIn {
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1990;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation-name: bgFadeIn;
+    animation-duration: 0.3s;
+}
+
+.modalOverlayOut {
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1990;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation-name: bgFadeOut;
+    animation-duration: 0.31s;
+}
+
+/* Modal fade animation */
+@keyframes modalFadeIn {
+    from {
+        transform: translate(-50%, -100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+    to {
+        transform: translate(-50%, -100%);
+        opacity: 0;
+    }
+}
+
+.modalIn {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 50%;
+    z-index: 2000;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.3);
+    background: var(--green);
+    color: #000;
+    display: grid;
+    grid-template-rows: 35% 45% 20%;
+    border-radius: 10px;
+    color: var(--offwhite);
+    animation-name: modalFadeIn;
+    animation-duration: 0.3s;
+}
+
+.modalOut {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 50%;
+    z-index: 2000;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.3);
+    background: var(--green);
+    color: #000;
+    display: grid;
+    grid-template-rows: 35% 30% 20% 15%;
+    border-radius: 10px;
+    color: var(--offwhite);
+    animation-name: modalFadeOut;
+    animation-duration: 0.35s;
+}
+
+.exit {
+    position: fixed;
+    left: 90%;
+    top: 2%;
+    height: 7%;
+}
+
+/* First Row (FOOD info) */
+.foodInfo {
+    display: grid;
+    grid-template-columns: 45% 55%;
+    align-items: center;
+    justify-items: start;
+    width: 95%;
+    justify-self: center;
+    border-bottom: solid 1.5px var(--offwhite);
+    height: 100%;
+    padding: 0 0 0 1rem;
+}
+
+.foodInfo img {
+    width: 100%;
+    height: 14vh;
+    border-radius:15px;
+}
+
+.text {
+    height: 50%;
+    display: grid;
+    row-gap:0.7vh;
+    grid-template-rows: 50% 30% 20%;
+    align-items: center;
+    justify-items: start;
+    text-align: left;
+    padding: 0 0 0.5rem 1rem;
+}
+
+
+.text h5 {
+    font-weight: normal;
+    margin: 0;
+    padding: 3.5vw 0 0 0;
+    font-size: 4vw;
+}
+
+.text span {
+    font-family: 'Didot';
+}
+
+/* Number counter */
+.foodAmt {
+    display: grid;
+    grid-template-columns: 45% 55%;
+    align-items: center;
+    justify-items: center;
+}
+
+.counter {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.counter img {
+    position: relative;
+    height: 5vw;
+}
+
+.counter h2 {
+    font-family: "Didot";
+    margin: 0;
+    font-size: 6.4vw;
+}
+
+/* Add button */
+.buttonWrapper {
+    justify-self: self-end;
+    text-align: center;
+    background-color: var(--offwhite);
+    border-radius: 0.5em; /* 0.1875 * 16 = 3px */
+    padding: 0.7rem 1.2rem 0.7rem 1.2rem; /* 0.1875 * 16 = 10px */
+    /* height: 40%; */
+    /* width: 35%; */
+    margin-right: 1rem;
+}
+
+.buttonWrapper h3 {
+    color: var(--terracota);
+    font-weight: bold;
+    font-size: 3.7vw;
+    margin: 0;
+    /* padding-top: 0.3rem 0.5rem; */
+}
+
+/* Last Row */
+.additionalNotes {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    padding-right: 0.5vw;
+}
+
+.additionalNotes img {
+    height: 35%;
+    position: relative;
+    left: 0.5vw;
+}
+
+.input {
+    width: 89%;
+    border: 0.5vw solid var(--offwhite);
+    height: 35%;
+    font-size: 3.1vw;
+    font-family: inherit;
+}
+
+@media (min-width: 420px) {
+    .buttonWrapper h3 {
+        padding-top: 0.5vw;
+    }
+    .input {
+        font-size: 2.5vw;
+    }
+}
+
+.propertyContainer{
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-items: start;
+    width: 95%;
+    justify-self: center;
+    border-bottom: solid 1.5px var(--offwhite);
+    height: 90%;
+}

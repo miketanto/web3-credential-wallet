@@ -1,0 +1,35 @@
+module.exports = {
+  env: {
+    mocha: true,
+  },
+  extends: ['airbnb'],
+  plugins: ['babel'],
+  rules: {
+    // 'prettier/prettier': ['error'],
+    'consistent-return': 'warn',
+    'func-names': 'off',
+    'global-require': 'warn',
+    'guard-for-in': 'warn',
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        ts: 'never',
+      },
+    ],
+    'import/prefer-default-export': 'off',
+    'prefer-destructuring': 'off',
+    'prefer-template': 'off',
+    'new-cap': 'warn',
+    'no-await-in-loop': 'warn',
+    'no-console': 'off',
+    'no-unused-vars': 'warn',
+    'no-restricted-syntax': 'warn',
+    'no-shadow': 'warn',
+    'no-underscore-dangle': 'warn',
+    'max-len': ['warn', 200],
+    semi: ['warn', 'never'],
+    quotes: ['warn', 'single'],
+  },
+}
