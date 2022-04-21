@@ -196,26 +196,21 @@ export async function mintMarketItem(url, signer,amount,royalty) {
   const tokenId = Number(value)
   console.log(tokenId)
 
-  // const price = ethers.utils.parseUnits(formInput.price, 'ether')
-
-  let listingPrice = await signedNFTMarket.getListingPrice()
-  listingPrice = listingPrice.toString()
-  console.log(listingPrice)
-
-  transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice)
-  receipt = await transaction.wait()
-  // TODO:: for loop here
   let itemId = null;
   
   console.log(amount)
-  for (let i = 0; i < amount; i++) {
-    transaction = await signedNFTMarket.createMarketItem(erc1155nftaddress, tokenId, amount,royalty)
+  if(amount>1){
+    transaction = await signedNFTMarket.createMultiMarketItem(erc1155nftaddress, tokenId,1,royalty,amount)
     receipt = await transaction.wait()
-    if(i === 0)itemId = receipt.events[0].args[0].toString()
+    itemId = receipt.events[0].args[0].toString()
+    console.log(itemId)
+  }else{
+    transaction = await signedNFTMarket.createMarketItem(erc1155nftaddress, tokenId,1,royalty)
+    receipt = await transaction.wait()
+    itemId = receipt.events[0].args[0].toString()
   }
   return {tokenId, itemId}
 }
-
 /**
  * Function: listMarketItem
  * Use: list an nft to E1155Market
@@ -225,7 +220,7 @@ export async function mintMarketItem(url, signer,amount,royalty) {
  * @returns {items}
  * * */
 
- export async function listMarketItem(nftId, lister, account, price, useGco) {
+ export async function listMarketItem(nftId, lister, account, price, useGco,amount) {
   // verify signer
   console.log(account)
   console.log(lister)
@@ -238,23 +233,39 @@ export async function mintMarketItem(url, signer,amount,royalty) {
   
   let listingPrice = await signedNFTMarket.getListingPrice()
   listingPrice = listingPrice.toString()
+  let ethListingPrice = ethers.utils.formatEther(listingPrice)
+  ethListingPrice = ethListingPrice * amount
+  console.log(ethListingPrice)
+  listingPrice =  ethers.utils.parseUnits(ethListingPrice.toString(), 'ether')
   console.log(listingPrice)
   const sellPrice = ethers.utils.parseUnits(price.toString(), 'ether')
 
   console.log("sell price: " + price)
   console.log("nftId: " + nftId)
-  transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice)
+  transaction = await signedGiesCoin.approve(erc1155nftmarketaddress,listingPrice)
   receipt = await transaction.wait()
 
-  transaction = await signedNFTMarket.createMarketListing(nftId, sellPrice, useGco)
-  receipt = await transaction.wait();
+  if(amount>1){
+    transaction = await signedNFTMarket.createMultiMarketListing(nftId, sellPrice, useGco,amount)
+    receipt = await transaction.wait();
+  }else{
+    transaction = await signedNFTMarket.createMarketListing(nftId, sellPrice, useGco)
+    receipt = await transaction.wait();
+  }
+ 
+ 
  
   console.log("LISTED")
   
 }
+
 
 export async function getAmountListed(nftId) {
   const amount = await ERC1155NFT.balanceOf(erc1155nftmarketaddress, nftId)
   return parseInt(amount._hex, 16)
 }
 
+export async function getNFTBalance(account, nftId) {
+  const amount = await ERC1155NFT.balanceOf(account, nftId)
+  return parseInt(amount._hex, 16)
+}

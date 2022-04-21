@@ -7,14 +7,16 @@ import NftCard from './NftCard';
 import NftMusicCard from './NftMusicCard';
 import { useMsal } from '@azure/msal-react'
 import { shuffleArray } from '../../store/utils';
+import axios from 'axios';
 
 //react functional component
-const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null }) => {
+const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, creatorAddress = null }) => {
 
     const dispatch = useDispatch();
     const nftItems = useSelector(selectors.nftItems);
     const nfts = nftItems ? shuffle ? shuffleArray(nftItems) : nftItems : [];
-    const filterednfts = removeDuplicates(nfts);
+    //const filterednfts = removeDuplicates(nfts);
+    const filterednfts = nftItems
     const [height, setHeight] = useState(0);
     const {accounts, instance}= useMsal();
 
@@ -25,11 +27,9 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null 
         }
     }
     
-    useEffect(() => {
-        dispatch(actions.fetchNftsBreakdown(authorId));
-        console.log(accounts[0])
-
-    }, [dispatch, authorId]);
+    useEffect(async() => {
+        dispatch(actions.fetchNftsBreakdown(creatorAddress));
+    }, [dispatch, creatorAddress]);
 
     //will run when component unmounted
     useEffect(() => {
@@ -40,7 +40,7 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null 
     },[dispatch]);
 
     const loadMore = () => {
-        dispatch(actions.fetchNftsBreakdown(authorId));
+        dispatch(actions.fetchNftsBreakdown(creatorAddress));
     }
 
     // transforms nft array to: 1. remove duplicates 2. take the lowest listed nft on the market
@@ -61,12 +61,12 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, authorId = null 
             {filterednfts && filterednfts.map( (nft, index) => (
                 <NftCard nft={nft} key={index} onImgLoad={onImgLoad} height={height} />
             ))}
-            { showLoadMore && nfts.length <= 20 &&
+            {showLoadMore && nftItems.length <= 20 &&
                 <div className='col-lg-12'>
                     <div className="spacer-single"></div>
                     <span onClick={loadMore} className="btn-main lead m-auto">Load More</span>
                 </div>
-            }
+        }
         </div>              
     );
 };

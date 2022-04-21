@@ -17,6 +17,8 @@ import { useMsal } from '@azure/msal-react'
 import { ToggleSwitch } from "../template-components/ToggleSwitch";
 import { useSelector, useDispatch } from "react-redux";
 import ColumnNewThreeColRedux from "../template-components/ColumnNewThreeColRedux";
+import AzureAuthenticationContext from "../../configs/azure-context";
+import { erc1155nftaddress } from "../../configs/contracts/contract_config";
 
 
 const GlobalStyles = createGlobalStyle`
@@ -76,38 +78,39 @@ export default function CreatePage() {
     royalty:1,
     currency: 'GIES'
   });
-  const { library, account, chainId } = useActiveWeb3React();
-  const status = useWalletConnected();
   const alert = useAlert();
-  /*const [accessToken, setAccessToken] = useState()
+  const [accessToken, setAccessToken] = useState()
+  const [address, setAddress] = useState("")
+
+  const authenticationModule = new AzureAuthenticationContext(instance)
 
   const request = {
   scopes: ['User.Read'],
   account: accounts[0],
 }
 
+const accessTokenCallback = (userAccount) => {
+  setAccessToken(userAccount.idTokenClaims.oid)
+  getAddress(userAccount.idTokenClaims.oid)
+}
+const getAddress = async(accessToken)=>{
+  const res = await axios.get("https://api.iblockcore.com/user/address", {headers: { Authorization: `Bearer ${accessToken}`}})
+  setAddress(res.data.payload.addresses.nftMarket)
+  const balanceres = await axios.get("https://api.iblockcore.com/user/balance", {headers: { Authorization: `Bearer ${accessToken}`}})
+  console.log(balanceres)
+}
   useEffect(() => {
-  // Silently acquires an access token which is then attached to a request for Microsoft Graph data
+  
   instance.acquireTokenSilent(request)
     .then(async (res) => {
       setAccessToken(res.accessToken)
               console.log('getAccount')
+      getAddress(res.accessToken)
     })
     .catch((e) => {
-      instance.acquireTokenPopup(request).then((res) => {
-        setAccessToken(res.accessToken)
-    })
+       authenticationModule.login('loginPopup',accessTokenCallback)
   })
-}, [])*/
-  
-
-  const walletAlert = () => {
-    if (status == "disconnected") {
-      alert.show("Connect Wallet to Create NFT");
-    } else {
-      alert.show("Change Network to Supported Networks");
-    }
-  };
+}, [])
 
   const handleShow = () => {
     document.getElementById("tab_opt_1").classList.add("show");
@@ -126,7 +129,6 @@ export default function CreatePage() {
 
 
   async function onFileChange(e) {
-    console.log(account);
     const file = e.target.files[0];
     console.log(file);
     try {
@@ -141,7 +143,25 @@ export default function CreatePage() {
   }
   
   
-
+  const createItemCall = async(name, added, quantity, royalty)=>{
+    console.log(address)
+    const res = await axios.post("https://api.iblockcore.com/nft/create",{
+      name: name ,
+      path:added.path,
+      collection_id:1,
+      quantity:quantity,
+      royalty: String(royalty),
+      useGco: true,
+      listed: false,
+      nftContract: erc1155nftaddress,
+      creator: address,
+      price:0,
+    },{
+      headers: { Authorization: `Bearer ${accessToken}`, token: accessToken },
+    })
+    console.log(res)
+    return res
+  }
   async function createMarketItem(toList) {
     const { name, description, tags,  quantity, price,royalty, currency } = formInput;
     if (!fileUrl) {
@@ -176,33 +196,18 @@ export default function CreatePage() {
       console.log(toList)
       const added = await client.add(data);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-     console.log(library, account);
-      console.log(added.path);
-      console.log(royalty)
-      const signer = library.getSigner(account);
-      console.log(signer);
-      loading();
+      loading()
       if(toList){
         console.log('Tolist')
-        const {itemId} = await mintMarketItem(added.path, signer, quantity,royalty)
-        ListMarketItem(itemId,price,currency).then(()=>navigate('/'));
+        const response = await createItemCall(name, added, quantity, royalty)
+        const itemId = response.data.payload.receipt[0].item_id
+        console.log(itemId)
+        listMarketItem(itemId,price,currency,quantity).then(()=>navigate('/'));
       }else{
-        const tx = await mintMarketItem(added.path, signer, quantity,royalty).then(()=>navigate('/'));
+        await createItemCall(name, added, quantity, royalty)
       }
-      /*console.log(accessToken)
-      const res = await axios.post("http://127.0.0.1:5000/marketplace/nfts/create",{
-        name: name ,
-        path:added.path,
-        collection_id:1,
-        quantity:1,
-        royalty: royalty,
-        useGco: true,
-        listed: false,
-        price:0,
-      },{
-        headers:{token:accessToken},
-      }).then(()=>navigate("/"))*/
+
+
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
@@ -224,18 +229,16 @@ export default function CreatePage() {
   }
 
   
-  async function ListMarketItem(itemId, price, currency) {
+  async function listMarketItem(itemId, price, currency,amount) {
     try {
-      const lister = library.getSigner(account)
       console.log('Call Func')
-      if(currency === 'GIES'){
-        let transaction = await listMarketItem(itemId, lister,account, price,true)
-        await transaction.wait()
-      }
-      else{
-        let transaction = await listMarketItem(itemId, lister,account, price,false)
-        await transaction.wait()
-      }
+      const callParams = {price: price, amount: amount, useGco: true};
+      if(currency!="GIES") callParams.useGco = false;
+      const res = await axios.post("https://api.iblockcore.com/nft/list",callParams,{
+        headers: { Authorization: `Bearer ${accessToken}`, token: accessToken },
+        params: {id: itemId}
+      })
+      console.log(res)
     } catch (error) {
       console.log('Error uploading file: ', error)
     }
@@ -470,14 +473,14 @@ export default function CreatePage() {
                   type="button"
                   id="submit"
                   className={
-                    status == "connected" ? "btn-main" : "btn-main-blacked"
+                     "btn-main"
                   }
                   whileHover={
-                    status == "connected" ? { scale: 1.1 } : { scale: 1 }
+                   { scale: 1.1 }
                   }
                   whileTap={{ scale: 0.9 }}
                   onClick={
-                    status == "connected" ? ()=>createMarketItem(toList) : walletAlert
+                     ()=>createMarketItem(toList)
                   }
                 >
                   Create NFT

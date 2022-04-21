@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import Footer from '../template-components/footer';
 import { createGlobalStyle } from 'styled-components';
@@ -6,6 +6,9 @@ import ColumnNewRedux from "../template-components/ColumnNewRedux";
 import * as selectors from '../../store/selectors';
 import { fetchHotCollections } from "../../store/actions/thunks";
 import api from "../../core/api";
+import { useMsal } from '@azure/msal-react'
+import AzureAuthenticationContext from "../../configs/azure-context";
+import axios from 'axios'
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -24,7 +27,47 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-const Colection = function({ collectionId = 1 }) {
+const Colection = function() {
+  const {accounts, instance}= useMsal();
+  const [accessToken, setAccessToken] = useState()
+
+  const [address, setAddress] = useState("")
+  const [collection, setCollection] = useState
+
+  const authenticationModule = new AzureAuthenticationContext(instance)
+
+  const request = {
+  scopes: ['User.Read'],
+  account: accounts[0],
+}
+
+
+const accessTokenCallback = (userAccount) => {
+  setAccessToken(userAccount.idTokenClaims.oid)
+  getAddressAndCollection(userAccount.idTokenClaims.oid)
+}
+const getAddressAndCollection= async(accessToken)=>{
+  const res = await axios.get("https://api.iblockcore.com/user/address", {headers: { Authorization: `Bearer ${accessToken}`}})
+  setAddress(res.data.payload.addresses.nftMarket)
+  const {data} = await axios.get("https://api.iblockcore.com/collection/get", {params:{id: res.data.payload.addresses.nftCollectionId}})
+  console.log(data)
+  setCollection(data)
+}
+
+  useEffect(() => {
+  
+  instance.acquireTokenSilent(request)
+    .then(async (res) => {
+      setAccessToken(res.accessToken)
+              console.log('getAccount')
+      getAddressAndCollection(res.accessToken)
+    })
+    .catch((e) => {
+       authenticationModule.login('loginPopup',accessTokenCallback)
+  })
+}, [])
+
+
 const [openMenu, setOpenMenu] = React.useState(true);
 const [openMenu1, setOpenMenu1] = React.useState(false);
 const handleBtnClick = () => {
@@ -41,18 +84,14 @@ const handleBtnClick1 = () => {
 };
 
 const dispatch = useDispatch();
-const hotCollectionsState = useSelector(selectors.hotCollectionsState);
-const hotCollections = hotCollectionsState.data ? hotCollectionsState.data[0] : {};
 
-useEffect(() => {
-    dispatch(fetchHotCollections(collectionId));
-}, [dispatch, collectionId]);
+
 
 return (
   <div>
   <GlobalStyles/>
-    { hotCollections.author &&  hotCollections.author.banner &&
-      <section id='profile_banner' className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${api.baseUrl + hotCollections.author.banner.url})`}}>
+    { collection.creator &&
+      <section id='profile_banner' className='jumbotron breadcumb no-bg' style={{backgroundColor: 'white'}}>
         <div className='mainbreadcumb'>
         </div>
       </section>
@@ -63,18 +102,18 @@ return (
         <div className="col-md-12">
           <div className="d_profile">
             <div className="profile_avatar">
-                { hotCollections.author &&  hotCollections.author.avatar &&
+                { collection.creator && 
                   <div className="d_profile_img">
-                    <img src={api.baseUrl + hotCollections.author.avatar.url} alt=""/>
+                    <img src={api.baseUrl + collection.creator} alt=""/>
                     <i className="fa fa-check"></i> 
                   </div>
                 }
                 <div className="profile_name">
                   <h4>
-                      { hotCollections.name }                                                
+                      { collection.name }                                                
                       <div className="clearfix"></div>
-                      { hotCollections.author &&  hotCollections.author.wallet &&
-                        <span id="wallet" className="profile_wallet">{ hotCollections.author.wallet }</span>
+                      { collection.author &&  collection.author.wallet &&
+                        <span id="wallet" className="profile_wallet">{ collection.creator}</span>
                       }
                       <button id="btn_copy" title="Copy Text">Copy</button>
                   </h4>
@@ -140,7 +179,7 @@ return (
           </div>
         {openMenu && (  
           <div id='zero1' className='onStep fadeIn'>
-            <ColumnNewRedux shuffle showLoadMore={false} authorId={hotCollections.author ? hotCollections.author.id : 1} />
+            <ColumnNewRedux shuffle showLoadMore={false} creatorAddress={collection.creator} />
           </div>
         )}
         {openMenu1 && ( 

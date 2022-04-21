@@ -67,9 +67,8 @@ const app= () => (
         <Explore2 path="/explore2" />
         <Allnfts path="/allnfts" />
         <RankingRedux path="/rangking" />
-        <Colection path="/colection/:collectionId" />
+        <Colection path="/profile" />
         <ItemDetailRedux path="/ItemDetail/:nftId" />
-        <Author path="/Author/:authorId" />
         <Wallet path="/wallet" />
         <Create2 path="/create2" />
         <Create3 path="/create3" />

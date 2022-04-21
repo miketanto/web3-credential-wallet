@@ -6,7 +6,7 @@ import { create as ipfsHttpClient } from 'ipfs-http-client'
 import {useState, useEffect} from 'react'
 import useActiveWeb3React from '../../hooks/useActiveWeb3React'
 import useWalletConnected from '../../hooks/useWalletConnected'
-import { mintMarketItem } from "../../utils/nftFunctions";
+import { getNFTBalance, mintMarketItem } from "../../utils/nftFunctions";
 import {navigate} from '@reach/router'
 import {motion} from 'framer-motion'
 import { useAlert } from 'react-alert'
@@ -87,9 +87,10 @@ const GlobalStyles = createGlobalStyle`
 `;
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 export default function ListingPage(props) {
-	const [formInput, updateFormInput] = useState({ currency: 'GIES', price: '' });
+	const [formInput, updateFormInput] = useState({ currency: 'GIES', price: '',quantity : 1 });
 
 	const { library, account } = useActiveWeb3React();
+  const [balance, setBalance] = useState(1);
 	
   const status = useWalletConnected();
   const alert = useAlert();
@@ -124,19 +125,32 @@ export default function ListingPage(props) {
     const item = items.filter((item) => item.itemId == props.nftId);
     setNft({ ...item[0], currentOwner: item[0].currentOwner.slice(2, 8) });
     console.log(item);
-  }, [dispatch, props.nftId]);
+
+  }, [dispatch, props.nftId,]);
+
+  useEffect(async () => {
+    if(account&& nft.tokenId){
+      const bal = await getNFTBalance(account, nft.tokenId)
+      setBalance(bal)
+    }
+  }, [account, nft.tokenId]);
 
   async function ListMarketItem() {
-    const { price,currency } = formInput;
+    const { price,currency,quantity } = formInput;
+    console.log(quantity)
     if (!price) {
       alert.show("Add a Price");
+      return;
+    }
+    if(quantity>balance){
+      alert.show("NFT Balance Insufficient");
       return;
     }
     try {
       console.log(library, account)
       const lister = library.getSigner(account)
       let useGco = (currency === "GIES")? true:false;
-      listMarketItem(nft.itemId, lister,account, formInput.price,useGco).then(() => navigate("/"));
+      listMarketItem(nft.itemId, lister,account, formInput.price,useGco,quantity).then(() => navigate("/"));
       loading();
     } catch (error) {
       console.log('Error listing NFT: ', error)
@@ -165,11 +179,10 @@ export default function ListingPage(props) {
 				</div>
 			</section> */}
 
+
 			<div className="spacer-60"></div>
 
 			<section className='container'>
-
-			<div className="spacer-30"></div>
 
 			<div className="row">
 				<div className="col-lg-7 offset-lg-1 mb-5">
@@ -179,14 +192,29 @@ export default function ListingPage(props) {
 
 										<div className="spacer-single"></div>
 
-										<h5>Type</h5>
+            <div className="col-lg-3 col-sm-6 col-xs-12">
+              <h5>Preview</h5>
+              <div className="nft__item m-0">
+                  <div className="nft__item_wrap">
+                      <span>
+                        <img src={nft.image} id="get_file_2" className="lazy nft__item_preview" alt=""/>
+                      </span>
+                  </div>
+                  <div className="nft__item_info">
+                      <span>
+                          <h4>{nft.name}</h4>
+                      </span>
+                      <span>
+                        <div className="nft__item_price">
+                            {formInput.price} {formInput.currency}
+                        </div>
+                      </span>
+
+                  </div>
+              </div>
+          </div>
+          <div className="spacer-30"></div>
 											<div className="de_tab tab_methods">
-													<ul className="de_nav">
-															<li id='btnFixedPrice' className="active" onClick={handleShowFixedPrice}><span><i className="fa fa-tag"></i>Fixed price</span>
-															</li>
-															<li id='btnTimedAuction' onClick={handleShowTimedAuction}><span><i className="fa fa-hourglass-1"></i>Timed auction</span>
-															</li>
-													</ul>
 													<div className="de_tab_content pt-3">
 															<div id="tab_opt_1">
 																	<h5>Price</h5>
@@ -216,19 +244,31 @@ export default function ListingPage(props) {
 															<input type="text" name="item_price" id="item_price" className="form-control" placeholder="enter price for one item" onChange={(e) => updateFormInput({ ...formInput, price: e.target.value })}/>
 													</div>
 											</div>
+
+                      <h5>Quantity</h5>
+                      <div className='row'>
+													<div className="col-md-3">
+															<input type="number" name="item_quantity" id="item_quantity" className="form-control" placeholder="Enter amount to list" onChange={(e) => updateFormInput({ ...formInput, quantity: e.target.value })}/>
+													</div>
+											</div>
+
 											<div className="spacer-10"></div>
-										<h5>Duration</h5>
+                      <h5>Balance Owned</h5>
+                      <div className="row">
+                        <div className="col-md-6">{balance}</div>
+                    </div>
+										{/*<h5>Duration</h5>
 											<div className="row">
-													{/* <div className="col-md-6">
+													<div className="col-md-6">
 															<h5>Starting date</h5>
 															<input type="date" name="bid_starting_date" id="bid_starting_date" className="form-control" min="1997-01-01" />
-													</div> */}
+													</div>
 													<div className="col-md-6">
 															<h5>Expiration date</h5>
 															<input type="date" name="bid_expiration_date" id="bid_expiration_date" className="form-control" value="7 days"/>
 													</div>
 											</div>
-									<div className="spacer-10"></div>
+									<div className="spacer-10"></div>*/}
 									{/* <div className="more_options">
 											{moreOptions ?
 											<div>
@@ -273,28 +313,6 @@ export default function ListingPage(props) {
                 </div>
               </form>
       </div>
-
-      <div className="col-lg-3 col-sm-6 col-xs-12">
-              <h5>Preview</h5>
-              <div className="nft__item m-0">
-                  <div className="nft__item_wrap">
-                      <span>
-                        <img src={nft.image} id="get_file_2" className="lazy nft__item_preview" alt=""/>
-                      </span>
-                  </div>
-                  <div className="nft__item_info">
-                      <span>
-                          <h4>{nft.name}</h4>
-                      </span>
-                      <span>
-                        <div className="nft__item_price">
-                            {formInput.price} {formInput.currency}
-                        </div>
-                      </span>
-
-                  </div>
-              </div>
-          </div>
 		</div>
 
 		</section>

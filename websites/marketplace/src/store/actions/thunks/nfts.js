@@ -6,7 +6,7 @@ import {ethers} from 'ethers'
 import {ERC1155Market,ERC1155NFT} from '../../../contracts'
 import { loadMarketNFTs } from '../../../utils/nftFunctions';
 
-export const fetchNftsBreakdown = (authorId, isMusic = false) => async (dispatch, getState) => {
+export const fetchNftsBreakdown = (creatorAddress, isMusic = false) => async (dispatch, getState) => {
   
   //access the state
   const state = getState();
@@ -15,16 +15,14 @@ export const fetchNftsBreakdown = (authorId, isMusic = false) => async (dispatch
   dispatch(actions.getNftBreakdown.request()); //Make Reducer state specify that its loading
 
   try {
-    /*let filter = authorId ? 'author='+authorId : '';
-    let music = isMusic ? 'category=music' : '';
-    const { data } = await Axios.get(`${api.baseUrl}${api.nfts}?${filter}&${music}`, {
-      cancelToken: Canceler.token,
-      params: {}
-    });*/
-
-    const nudata = await loadMarketNFTs()
-    console.log(nudata) 
-    dispatch(actions.getNftBreakdown.success(nudata))
+    let filter
+    if(creatorAddress){
+      filter = {params:{owner:creatorAddress}}
+    }
+    
+    const { data } = await axios.get(`https://api.iblockcore.com/nft/get`, filter);
+    console.log(data.payload.nfts)
+    dispatch(actions.getNftBreakdown.success(data.payload.nfts))
   } catch (err) {
     dispatch(actions.getNftBreakdown.failure(err));
   }

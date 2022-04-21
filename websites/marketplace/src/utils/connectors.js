@@ -13,7 +13,7 @@ import {currentChainUrl, currentChainId} from './chainConst'
 export const injectedConnector = new InjectedConnector({ supportedChainIds: [1515,1337] })
 
 export const networkConnector = new NetworkConnector({
-  urls: { 1515 : process.env.REACT_APP_WEB3_URL},
+  urls: { 1515: process.env.REACT_APP_WEB3_URL},
 // 1337:'http://127.0.0.1:7545'},
   defaultChainId: 1515,
 })

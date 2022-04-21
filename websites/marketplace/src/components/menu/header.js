@@ -5,6 +5,7 @@ import Web3Status from '../Web3Status'
 import { Link } from '@reach/router';
 import useOnclickOutside from "react-cool-onclickoutside";
 import AzureAuthenticationButton from "../AzureAuthButton";
+import axios from "axios";
 
 
 setDefaultBreakpoints([
@@ -31,7 +32,8 @@ const NavLink = props => (
 const Header = function({ className }) {
 
     const onAuthenticated = async (userAccountInfo) => {
-        // setCurrentUser(userAccountInfo)
+      //const address = await axios.get()
+      console.log(userAccountInfo)
     }
     const [openMenu, setOpenMenu] = React.useState(false);
     const [openMenu1, setOpenMenu1] = React.useState(false);
@@ -270,8 +272,8 @@ const Header = function({ className }) {
 
               <div className='mainside'>
                 <div className = 'connect-wal'>
-                  <Web3Status/>
-                  {/*<AzureAuthenticationButton onAuthenticated = {onAuthenticated}/>*/}
+                  {/*<Web3Status/>*/}
+                  {<AzureAuthenticationButton onAuthenticated = {onAuthenticated}/>}
                 </div>
                 
                 <div className="logout">
