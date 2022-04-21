@@ -16,6 +16,31 @@ function createNewWallet() {
   return ethers.Wallet.createRandom()
 }
 
+/**
+ * @param {address} creatorAddress
+ * @param {string} name
+ * @param {string} description
+ * @return {Promise<T>}
+ */
+async function createNewCollection(creatorAddress, name, description) {
+  const collectionId = await Collections.create({
+    name,
+    creator: creatorAddress,
+    contract_address: erc1155nftaddress,
+    description,
+    no_items: 0,
+    no_owners: 1,
+    floor_price: 0,
+    volume_traded: 0,
+    website: null,
+    discord: null,
+    instagram: null,
+    twitter: null,
+  }).then((result) => result.collection_id)
+    .catch((err) => { throw err })
+  return collectionId
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export async function address(options) {
   try {
@@ -44,21 +69,11 @@ export async function address(options) {
       await Wallets.create(createParams)
 
       // Create New Collection for user
-      collectionId = await Collections.create({
-        name: `Collection by ${firstName} ${lastName}`,
-        creator: addresses[1], // use NFT address (index 1)
-        contract_address: erc1155nftaddress,
-        description: `Collection by ${firstName} ${lastName}`,
-        no_items: 0,
-        no_owners: 1,
-        floor_price: 0,
-        volume_traded: 0,
-        website: null,
-        discord: null,
-        instagram: null,
-        twitter: null,
-      }).then((result) => result.collection_id)
-        .catch((err) => { throw err })
+      collectionId = createNewCollection(
+        addresses[1], // use NFT address (index 1)
+        `Collection by ${firstName} ${lastName}`,
+        `Collection by ${firstName} ${lastName}`,
+      )
     } else {
       // WALLET EXISTS
       const walletData = walletRecords[0]
@@ -66,11 +81,22 @@ export async function address(options) {
       addresses = getAddressOfWallet(wallet, 0, 2)
 
       // Get Associated Collection Id
-      const collectionData = await Collections.findOne({
+      const collectionRecord = await Collections.findOne({
         where: { creator: addresses[1] },
         raw: true,
       })
-      collectionId = collectionData.collection_id
+
+      if (!collectionRecord || !collectionRecord.collection_id) {
+        // Create New Collection for existing user that doesn't have collection for some reason
+        collectionId = createNewCollection(
+          addresses[1], // use NFT address (index 1)
+          `Collection by ${firstName} ${lastName}`,
+          `Collection by ${firstName} ${lastName}`,
+        )
+      } else {
+        // retrieve that existing collection id for the user
+        collectionId = collectionRecord.collection_id
+      }
     }
 
     const [skillsWalletAddr, nftMarketAddr] = addresses
