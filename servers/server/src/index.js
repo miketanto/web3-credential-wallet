@@ -10,6 +10,7 @@ import {
   morgan, envVars, passport as passportHelper,
 } from './config'
 import { errorConverter, errorHandler } from './middlewares/error'
+import sequelize from './models'
 import routes from './routes'
 import { ApiError, logger } from './utils'
 
@@ -19,6 +20,9 @@ if (envVars.env !== 'test') {
   app.use(morgan.successHandler)
   app.use(morgan.errorHandler)
 }
+
+// sync database (create tables if not exist)
+sequelize.sync()
 
 // set security HTTP headers
 app.use(helmet())

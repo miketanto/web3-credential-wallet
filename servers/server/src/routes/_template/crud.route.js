@@ -17,7 +17,7 @@ export function getterRoute(router, validator, service, pk) {
       catchAsync(async (req, res, next) => {
         const options = pick(req.query, [pk])
         const payload = await service.get({ ...options })
-        res.locals = { payload }
+        res.locals = payload
         next()
       }),
     )
