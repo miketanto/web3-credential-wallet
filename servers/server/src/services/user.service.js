@@ -78,11 +78,15 @@ export async function balance(options) {
     const { user: { wallet } } = options
 
     // Get idx = 1 for `nft marketplace` address associated with the user
-    const marketplaceAddr = getAddressOfWallet(wallet, 1, 1)
+    const addr = getAddressOfWallet(wallet, 1, 1)[0]
+
+    const providerGiesCoin = GiesCoin.connect(provider)
+    const providerMerchCoin = MerchCoin.connect(provider)
+
     return {
-      ETH: await provider.getBalance(marketplaceAddr),
-      GCO: await GiesCoin.balanceOf(marketplaceAddr),
-      MCO: await MerchCoin.balanceOf(marketplaceAddr),
+      ETH: (await provider.getBalance(addr)).toString(),
+      GCO: (await providerGiesCoin.balanceOf(addr)).toString(),
+      MCO: (await providerMerchCoin.balanceOf(addr)).toString(),
     }
   } catch (e) {
     console.log(e)
