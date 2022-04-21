@@ -249,7 +249,8 @@ export async function listMarketItem(nftId, lister, price, useGco, amount) {
     gasLimit: 9000000, // 21000 should suffice, but just in case
   }
 
-  transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice, config)
+  // transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice, config)
+  transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, ethers.utils.parseUnits('15', 'ether'), config)
   receipt = await transaction.wait()
   console.log('Approved', receipt)
 

@@ -26,7 +26,7 @@ export async function get(options) {
       const meta = await axios.get(tokenUri)
       const price = i.price !== undefined ? ethers.utils.formatUnits(i.price.toString(), 'ether') : 0
       const item = {
-	price: price.toString(),
+        price: price.toString(),
         itemId: Number(i.item_id).toString(),
         tokenId: Number(i.token_id).toString(),
         creator: i.creator,
