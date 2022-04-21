@@ -24,11 +24,11 @@ export async function get(options) {
     return await Promise.all(data.map(async (i) => {
       const tokenUri = i.meta_url
       const meta = await axios.get(tokenUri)
-      const price = i.price !== undefined ? ethers.utils.formatUnits(i.currentPrice.toString(), 'ether') : 0
+      const price = i.price !== undefined ? ethers.utils.formatUnits(i.price.toString(), 'ether') : 0
       const item = {
-        price,
-        itemId: Number(i.item_id),
-        tokenId: Number(i.token_id),
+	price: price.toString(),
+        itemId: Number(i.item_id).toString(),
+        tokenId: Number(i.token_id).toString(),
         creator: i.creator,
         currentOwner: i.current_owner,
         listed: i.listing_status,
