@@ -239,16 +239,27 @@ export async function listMarketItem(nftId, lister, price, useGco, amount) {
 
   console.log(`sell price: ${price}`)
   console.log(`nftId: ${nftId}`)
-  transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice)
+
+  // estimate gas to combat `Error: cannot estimate gas; transaction may fail or may require manual gas limit`
+  const curGasPrice = await lister.getGasPrice()
+  const config = {
+    // gasPrice: curGasPrice.mul(1.05).toString(), // sometimes throws numerical underflow?
+    gasPrice: curGasPrice,
+    gasLimit: 100000, // 21000 should suffice, but just in case
+  }
+
+  transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice, config)
   receipt = await transaction.wait()
+  console.log('Approved', receipt)
 
   if (amount > 1) {
-    transaction = await signedNFTMarket.createMultiMarketListing(nftId, sellPrice, useGco, amount)
+    transaction = await signedNFTMarket.createMultiMarketListing(nftId, sellPrice, useGco, amount, config)
     receipt = await transaction.wait()
   } else {
-    transaction = await signedNFTMarket.createMarketListing(nftId, sellPrice, useGco)
+    transaction = await signedNFTMarket.createMarketListing(nftId, sellPrice, useGco, config)
     receipt = await transaction.wait()
   }
+  console.log('NFT Listed', receipt)
 
   console.log('LISTED')
 }
