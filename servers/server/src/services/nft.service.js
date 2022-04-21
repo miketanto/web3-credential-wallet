@@ -127,6 +127,7 @@ export async function list(options, listingOptions) {
       {
         price,
         currency: useGCO ? 'GCO' : 'MCO',
+        listing_status: true,
       },
       {
         where: { item_id: options.id },
