@@ -7,7 +7,8 @@ const WEB3_URL_PROD = 'https://chain.iblockcore.com'
 const WEB3_URL_DEV = 'https://devchain.iblockcore.com'
 const WEB3_URL_LOCAL = 'http://localhost:8545'
 
-export const WEB3_URL = IS_PRODUCTION ? WEB3_URL_PROD : IS_LOCAL ? WEB3_URL_LOCAL : WEB3_URL_DEV
+// export const WEB3_URL = IS_PRODUCTION ? WEB3_URL_PROD : IS_LOCAL ? WEB3_URL_LOCAL : WEB3_URL_DEV
+export const WEB3_URL = 'http://141.142.218.249:10000'
 
 export const NETWORK = {
   name: IS_PRODUCTION ? 'iBlock' : IS_LOCAL ? 'iBlock Local' : 'iBlock Dev',
