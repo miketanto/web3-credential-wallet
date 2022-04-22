@@ -213,8 +213,7 @@ export async function mintMarketItem(url, signer, amount, royalty, price, useGco
   else transaction = await signedNFTMarket.createMarketItem(erc1155nftaddress, tokenId, 1, royalty,price,useGco)
 
   receipt = await transaction.wait()
-  console.log(receipt)
-  const itemId = null
+  const itemId = receipt.events[1].args[0].toString()
   console.log(itemId)
 
   return { tokenId, itemId }
