@@ -221,7 +221,7 @@ export async function mintMarketItem(url, signer, amount, royalty) {
 
  export async function listMarketItem(nftId, lister, account, price, useGco,amount) {
   // verify signer
-  console.log(account)
+  lister = provider.getSigner(lister.address)
   console.log(lister)
   const signedNFT = ERC1155NFT.connect(lister)
   const signedNFTMarket = ERC1155Market.connect(lister)
