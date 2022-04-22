@@ -124,7 +124,8 @@ export async function list(options, listingOptions) {
     const { price, useGco: useGCO, amount } = listingOptions
     // console.log(options)
     // console.log(listingOptions)
-    const listing = await listMarketItem(id, signer, price, useGCO, amount)
+    console.log(signer) 
+    const listing = await listMarketItem(id, signer,signer, price, useGCO, amount)
     return await Assets.update(
       {
         price,
