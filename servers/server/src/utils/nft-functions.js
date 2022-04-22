@@ -227,8 +227,6 @@ export async function listMarketItem(nftId, lister, price, useGco, amount) {
   const signedNFT = ERC1155NFT.connect(lister)
   const signedNFTMarket = ERC1155Market.connect(lister)
   const signedGiesCoin = GiesCoin.connect(lister)
-  console.log(signedNFTMarket)
-  console.log(signedGiesCoin)
   
   let transaction = await signedNFT.setApprovalForAll(erc1155nftmarketaddress, true);
   let receipt = await transaction.wait()
