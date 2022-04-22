@@ -207,13 +207,14 @@ export async function mintMarketItem(url, signer, amount, royalty, price, useGco
   console.log(listingPrice.toString())
   transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice)
   receipt = await transaction.wait()
-  
+
   // Automatically choose create functions based on input amount
   if (amount > 1) transaction = await signedNFTMarket.createMultiMarketItem(erc1155nftaddress, tokenId, 1, royalty, amount)
   else transaction = await signedNFTMarket.createMarketItem(erc1155nftaddress, tokenId, 1, royalty,price,useGco)
 
   receipt = await transaction.wait()
-  const itemId = receipt.events[0].args[0].toString() || null
+  console.log(receipt)
+  const itemId = null
   console.log(itemId)
 
   return { tokenId, itemId }
