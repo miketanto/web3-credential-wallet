@@ -251,7 +251,7 @@ export async function mintMarketItem(url, signer, amount, royalty) {
     console.log(sellPrice.toString())
     const stringSellPrice = sellPrice.toString()
     console.log(useGco)
-    transaction = await signedNFTMarket.createMarketListing(nftId, stringSellPrice, useGco)
+    transaction = await signedNFTMarket.createMarketListing(nftId, sellPrice, useGco)
     receipt = await transaction.wait();
   }
  
