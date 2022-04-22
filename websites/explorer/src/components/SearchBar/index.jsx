@@ -14,17 +14,13 @@ function SearchBar({
   const location = useLocation()
   const history = useHistory()
   const [searchInput, setSearchInput] = useState('')
-  const [isMarketplace, setIsMarketplace] = useState(false)
-  useEffect(() => {
-    const { pathname: path } = location
-    setIsMarketplace(path.startsWith('/marketplace'))
-  }, [location.pathname])
+
   const onSearchHandler = () => {
     if (!searchInput) return
 
     // Check if it's block number (digits only)
     if (/^\d+$/.test(searchInput)) {
-      history.push(`/block/${searchInput}`)
+      history.push(`/explorer/block/${searchInput}`)
       return
     }
 
@@ -33,12 +29,12 @@ function SearchBar({
     // Address: 40 (+2)
     if (Web3Utils.isAddress(searchInput)) {
       const address = searchInput.startsWith('0x') ? searchInput : `0x${searchInput}` // prepend 0x
-      history.push(`/address/${address}`)
+      history.push(`/explorer/address/${address}`)
       return
     }
 
     if (searchInput.length === 66) {
-      history.push(`/tx/${searchInput}`)
+      history.push(`/explorer/tx/${searchInput}`)
     }
   }
 
@@ -56,26 +52,23 @@ function SearchBar({
     //   </button>
     // </div>
     <div className={classNames('flex items-center bg-white border-2 border-light-contrast rounded-lg h-full',
-      isMarketplace && 'shadow-lg shadow-blue-100',
       shadow && 'shadow-cmd', sizeClass, textClass, className)}
     >
       <FontAwesomeIcon className="mx-3" icon={faSearch} />
       <input
         type="text"
-        placeholder={isMarketplace ? 'Name/ TokenID/ SaleID' : 'Block/Transaction/Address'}
+        placeholder="Block/Transaction/Address"
         className={clsx('flex-grow py-3 px-2 outline-none h-full w-auto max-w-full')}
         onInput={(e) => setSearchInput(e.target.value)}
       />
-      {isMarketplace ? null : (
-        <button
-          type="button"
-          className="py-3 px-4 text-white bg-altgeld rounded-tr-lg rounded-br-lg hover:bg-illini-orange cursor-pointer h-full"
-          style={{ display: 'grid', placeContent: 'center' }}
-          onClick={onSearchHandler}
-        >
-          Search
-        </button>
-      )}
+      <button
+        type="button"
+        className="py-3 px-4 text-white bg-altgeld rounded-tr-lg rounded-br-lg hover:bg-illini-orange cursor-pointer h-full"
+        style={{ display: 'grid', placeContent: 'center' }}
+        onClick={onSearchHandler}
+      >
+        Search
+      </button>
     </div>
   )
 }
