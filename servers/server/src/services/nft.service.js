@@ -121,15 +121,14 @@ export async function update(options, NFT) {
 export async function list(options, listingOptions) {
   try {
     const { user: { signer }, id } = options
-    const { price, useGco: useGCO, amount } = listingOptions
+    const { price, useGco, amount } = listingOptions
     // console.log(options)
     // console.log(listingOptions)
-    console.log(signer) 
-    const listing = await listMarketItem(id, signer,signer, price, useGCO, amount)
+    const listing = await listMarketItem(id, signer, price, useGco, amount)
     return await Assets.update(
       {
         price,
-        currency: useGCO ? 'GCO' : 'MCO',
+        currency: useGco ? 'GCO' : 'MCO',
         listing_status: true,
       },
       {

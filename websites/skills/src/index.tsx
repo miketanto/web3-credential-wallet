@@ -1,3 +1,4 @@
+import { Auth0Provider } from '@auth0/auth0-react'
 import { PublicClientApplication } from '@azure/msal-browser'
 import { MsalProvider } from '@azure/msal-react'
 import React from 'react'
@@ -39,14 +40,20 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <MsalProvider instance={pca}>
+        <Auth0Provider
+          domain="dev-qdoaepgh.us.auth0.com"
+          clientId="ATIWCOwYIsDrBcsdqAiBq3V03sUhd7aN"
+          redirectUri={window.location.origin}
+          audience="https://dev-qdoaepgh.us.auth0.com/api/v2/"
+          scope="read:current_user update:current_user_metadata"
+        >
           <BrowserRouter basename="/">
             {/* <Updaters /> */}
             <HelmetProvider>
               <App />
             </HelmetProvider>
           </BrowserRouter>
-        </MsalProvider>
+        </Auth0Provider>
       </PersistGate>
     </Provider>
   </React.StrictMode>,

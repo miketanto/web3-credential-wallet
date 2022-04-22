@@ -63,6 +63,18 @@ module.exports = {
       gasPrice: 1000000000,
       // Combat `Error: cannot estimate gas; transaction may fail or may require manual gas limit`
     },
+
+    mumbai: {
+      //provider: () => new HDWalletProvider('0x54cf1846d54c268e71aa0c037b58c6d95c96f7915b238eca9cf35d4b3f16c5b6', 'wss://ws-matic-mumbai.chainstacklabs.com'),
+      provider: () => new HDWalletProvider('0x54cf1846d54c268e71aa0c037b58c6d95c96f7915b238eca9cf35d4b3f16c5b6','https://polygon-mumbai.g.alchemy.com/v2/FBtGBcjiLL9_YbMpVpTmynqt41nMVbLY'),
+      network_id: 80001,
+      gas: 210000,
+      gasPrice: 10000000000,
+      websocket: false,
+      skipDryRun: true,
+      timeoutBlocks: 100,
+        networkCheckTimeout: 1000000,
+    }
     
     // backup copy:
     // development: {
