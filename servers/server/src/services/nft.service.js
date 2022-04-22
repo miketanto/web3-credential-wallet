@@ -125,9 +125,8 @@ export async function list(options, listingOptions) {
     // console.log(options)
     // console.log(listingOptions)
     console.log(signer) 
-    //const listing = await listMarketItem(id, signer, price, useGCO, amount)
-    return 
-    /*return await Assets.update(
+    const listing = await listMarketItem(id, signer, price, useGCO, amount)
+    return await Assets.update(
       {
         price,
         currency: useGCO ? 'GCO' : 'MCO',
@@ -136,7 +135,7 @@ export async function list(options, listingOptions) {
       {
         where: { item_id: options.id },
       },
-    )*/
+    )
   } catch (e) {
     console.log(e)
     if (e instanceof ApiError) throw e

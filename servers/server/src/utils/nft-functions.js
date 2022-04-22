@@ -9,6 +9,7 @@ import {
 import {
   GiesCoin, MerchCoin, NFT as NFTContract, NFTMarket, ERC1155Market, ERC1155NFT,
 } from '../contracts'
+import { provider } from '../constants'
 
 /**
  * Function: loadMarketNFTs
@@ -221,6 +222,7 @@ export async function mintMarketItem(url, signer, amount, royalty) {
 export async function listMarketItem(nftId, lister, price, useGco, amount) {
   // verify signer
   console.log(lister)
+  lister = provider.getSigner("0xD81Ec36f564335D6895eF332487eC75113135641")
   const signedNFT = ERC1155NFT.connect(lister)
   const signedNFTMarket = ERC1155Market.connect(lister)
   const signedGiesCoin = GiesCoin.connect(lister)
