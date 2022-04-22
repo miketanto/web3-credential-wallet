@@ -221,8 +221,6 @@ export async function mintMarketItem(url, signer, amount, royalty) {
 
 export async function listMarketItem(nftId, lister, price, useGco, amount) {
   // verify signer
-  console.log(lister)
-  lister = provider.getSigner("0xD81Ec36f564335D6895eF332487eC75113135641")
   const signedNFT = ERC1155NFT.connect(lister)
   const signedNFTMarket = ERC1155Market.connect(lister)
   const signedGiesCoin = GiesCoin.connect(lister)
@@ -252,15 +250,15 @@ export async function listMarketItem(nftId, lister, price, useGco, amount) {
   }
 
   // transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice, config)
-  transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, ethers.utils.parseUnits('15', 'ether'), config)
+  transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, ethers.utils.parseUnits('15', 'ether'))
   receipt = await transaction.wait()
   console.log('Approved', receipt)
 
   if (amount > 1) {
-    transaction = await signedNFTMarket.createMultiMarketListing(nftId, sellPrice, useGco, amount, config)
+    transaction = await signedNFTMarket.createMultiMarketListing(nftId, sellPrice, useGco, amount)
     receipt = await transaction.wait()
   } else {
-    transaction = await signedNFTMarket.createMarketListing(nftId, sellPrice, useGco, config)
+    transaction = await signedNFTMarket.createMarketListing(nftId, sellPrice, useGco)
     receipt = await transaction.wait()
   }
   console.log('NFT Listed', receipt)
