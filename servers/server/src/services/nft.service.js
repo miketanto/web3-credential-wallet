@@ -63,7 +63,7 @@ export async function create(options) {
       creator, nftContract, royalty, useGco: useGCO, listed, price,
     } = options
     console.log(address)
-    const { tokenId, itemId } = await mintMarketItem(path, signer, quantity, royalty)
+    const { tokenId, itemId } = await mintMarketItem(path, signer, quantity, royalty,price,useGCO)
 
     const NFTs = []
     for (let i = 0; i < quantity; i++) {

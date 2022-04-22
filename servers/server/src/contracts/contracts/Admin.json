@@ -42,7 +42,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -81,7 +82,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -100,7 +102,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -139,7 +142,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -197,7 +201,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -216,7 +221,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.6+commit.11564f7e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_firstAdmin\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newAdmin\",\"type\":\"address\"}],\"name\":\"addAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_criminal\",\"type\":\"address\"}],\"name\":\"addToBlacklist\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"addressToStudentId\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"studentId\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAdminCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"isAdmin\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_person\",\"type\":\"address\"}],\"name\":\"isBlacklisted\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_studentId\",\"type\":\"bytes32\"}],\"name\":\"pairStudentIdAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_badAdmin\",\"type\":\"address\"}],\"name\":\"removeAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_parolee\",\"type\":\"address\"}],\"name\":\"removeFromBlacklist\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_studentId\",\"type\":\"bytes32\"}],\"name\":\"studentIdToAddress\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Admin.sol\":\"Admin\"},\"evmVersion\":\"berlin\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/Ownable.sol\":{\"keccak256\":\"0x24e0364e503a9bbde94c715d26573a76f14cd2a202d45f96f52134ab806b67b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e12cbaa7378fd9b62280e4e1d164bedcb4399ce238f5f98fc0eefb7e50577981\",\"dweb:/ipfs/QmXRoFGUgfsaRkoPT5bxNMtSayKTQ8GZATLPXf69HcRA51\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"project:/contracts/Admin.sol\":{\"keccak256\":\"0xfeb963d3e4264344d31019632270eb22108201b01bc4362551dfa6000cd2a764\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://4e4877ccf7a1c564ea1ec0021099b34a0605407c6ad83083f9efd72e719e5409\",\"dweb:/ipfs/Qmc6sis2GBXNSqhh5P9Zuo9i6Tyz53v5Aq72pt7k873waU\"]},\"project:/contracts/Libraries.sol\":{\"keccak256\":\"0x7082590e78cef054c8849e724bad815e92289fc306322a7626ca63f6df2edfe3\",\"license\":\"UNLICENSED\",\"urls\":[\"bzz-raw://3a5f301f42000e8b2daea745b974b3d7337fa8942419dd9d8a0f104dcbca9beb\",\"dweb:/ipfs/Qmf9jiqwiksQrRhrfrD5KtQce5RCkxKNER6Y96aoUisLjS\"]}},\"version\":1}",
@@ -4998,7 +5004,7 @@
     "absolutePath": "project:/contracts/Admin.sol",
     "exportedSymbols": {
       "Accessibility": [
-        6537
+        6625
       ],
       "Admin": [
         4185
@@ -5010,7 +5016,7 @@
         104
       ],
       "UtilFunctions": [
-        6381
+        6469
       ]
     },
     "id": 4186,
@@ -5035,7 +5041,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 4186,
-        "sourceUnit": 6538,
+        "sourceUnit": 6626,
         "src": "161:25:21",
         "symbolAliases": [],
         "unitAlias": ""
@@ -7545,7 +7551,7 @@
     "absolutePath": "project:/contracts/Admin.sol",
     "exportedSymbols": {
       "Accessibility": [
-        6537
+        6625
       ],
       "Admin": [
         4185
@@ -7557,7 +7563,7 @@
         104
       ],
       "UtilFunctions": [
-        6381
+        6469
       ]
     },
     "id": 4186,
@@ -7582,7 +7588,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 4186,
-        "sourceUnit": 6538,
+        "sourceUnit": 6626,
         "src": "161:25:21",
         "symbolAliases": [],
         "unitAlias": ""
@@ -10094,14 +10100,35 @@
   },
   "networks": {
     "1515": {
-      "events": {},
+      "events": {
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        }
+      },
       "links": {},
-      "address": "0x0F87f1c57be6Dc7be8a58237cDFabA05cefE3cb0",
-      "transactionHash": "0x6b0b53cde45b8155c9d96d2fb8fd6d2c0138deee91b56081699510b7a0b4e2ff"
+      "address": "0xc822b8a87439Bf47B6DA27Ef7b3baa062C3D5f8B",
+      "transactionHash": "0x7342ab4d147353013e7da3ebb53aa9925246736db8d6deeb208505e8b6658f4b"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2022-04-21T18:46:22.788Z",
+  "updatedAt": "2022-04-22T08:31:07.091Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {
