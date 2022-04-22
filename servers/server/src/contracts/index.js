@@ -13,7 +13,7 @@ import erc1155market from './contracts/ERC1155Market.json'
 import { getVanillaContract } from '../utils/contract'
 
 /* eslint-disable global-require */
-const Web3Provider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_WEB3_URL)
+const Web3Provider = new ethers.providers.StaticJsonRpcProvider(process.env.REACT_APP_WEB3_URL)
 export const MerchCoin = getVanillaContract(mcoaddress, mco.abi, Web3Provider)
 export const GiesCoin = getVanillaContract(gcoaddress, gco.abi, Web3Provider)
 export const NFT = getVanillaContract(nftaddress, nft.abi, Web3Provider)
