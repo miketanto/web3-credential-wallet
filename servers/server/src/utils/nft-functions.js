@@ -236,7 +236,7 @@ export async function mintMarketItem(url, signer, amount, royalty) {
   ethListingPrice = ethListingPrice * amount
   console.log(ethListingPrice)
   listingPrice =  ethers.utils.parseUnits(ethListingPrice.toString(), 'ether')
-  console.log(listingPrice)
+  console.log(listingPrice.toString())
   const sellPrice = ethers.utils.parseUnits(price.toString(), 'ether')
 
   console.log("sell price: " + price)
