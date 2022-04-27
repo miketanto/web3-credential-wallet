@@ -108,7 +108,7 @@ export default function Mint() {
 
     // Check if user is already associated, if so skip to step 3
     const config = { headers: { Authorization: `Bearer ${accessToken}` } }
-    axios.get('http://localhost:4000/summit/get-associated', config)
+    axios.get('https://api.iblockcore.com/summit/get-associated', config)
       .then((res) => res?.data)
       .then((data) => {
         const { address } = data.payload
@@ -133,7 +133,7 @@ export default function Mint() {
     const config = { headers: { Authorization: `Bearer ${accessToken}` } }
 
     setInProgress({ ...inProgress, mint: true })
-    axios.post('http://localhost:4000/summit/mint', {}, config)
+    axios.post('https://api.iblockcore.com/summit/mint', {}, config)
       .then((res) => res?.data)
       .then((data) => {
         const { transaction: tx } = data.payload
@@ -156,7 +156,7 @@ export default function Mint() {
     const config = { headers: { Authorization: `Bearer ${accessToken}` } }
 
     setInProgress({ ...inProgress, associate: true })
-    axios.post('http://localhost:4000/summit/associate', data, config)
+    axios.post('https://api.iblockcore.com/summit/associate', data, config)
       .then((res) => res?.data)
       .then((data) => {
         setInProgress({ ...inProgress, associate: false })
@@ -172,7 +172,7 @@ export default function Mint() {
     const config = { headers: { Authorization: `Bearer ${accessToken}` } }
 
     setInProgress({ ...inProgress, custodial: true })
-    axios.get('http://localhost:4000/summit/custodial', config)
+    axios.get('https://api.iblockcore.com/summit/custodial', config)
       .then((res) => res?.data)
       .then((data) => {
         setMintAddress(data.payload.address)
