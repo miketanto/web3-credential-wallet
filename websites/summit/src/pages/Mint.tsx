@@ -254,7 +254,12 @@ export default function Mint() {
               </div>
               <div className={clsx('py-4', mintResult === '' && 'hidden')}>
                 {
-                  mintResult === 'already-minted' ? 'Already Minted!' : (
+                  mintResult === 'already-minted' ? (
+                    <>
+                      <div className="pb-4">Already Minted!</div>
+                      <a className="text-sky-500 underline" href={`https://opensea.io/${mintAddress}`} target="_blank" rel="noreferrer">View your NFT here!</a>
+                    </>
+                  ) : (
                     <>
                       <div className="pb-4">The explorer takes some time to show the transaction. Please wait!</div>
                       <a className="text-sky-500 underline" href={`https://polygonscan.com/tx/${mintResult}`} target="_blank" rel="noreferrer">{`Explorer: tx/${mintResult}`}</a>
