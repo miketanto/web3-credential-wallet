@@ -3,7 +3,7 @@ import {
 } from 'ethers'
 
 import { Skills } from '../models'
-import HHContract from '../contracts/hardhat_contracts.json'
+import HHContract from '../contracts/summit/mumbai/hardhat_contracts.json'
 
 const {
   address: MUMBAI_SKILLS_ADDRESS,

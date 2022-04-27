@@ -19,6 +19,9 @@ const envVarsSchema = Joi.object()
     WEB3_NODE_URL: Joi.string().required(),
     IPFS_BASE_URL: Joi.string().required(),
 
+    POLYGON_DEPLOYER_KEY: Joi.string().required(),
+    MUMBAI_DEPLOYER_KEY: Joi.string().required(),
+
     RP_ADDRESS: Joi.string().required(),
     RP_PASSWORD: Joi.string().required(),
     RP_PRIVATE_KEY: Joi.string().required(),
@@ -51,6 +54,11 @@ export default {
 
   web3NodeUrl: envVars.WEB3_NODE_URL,
   ipfsBaseUrl: envVars.IPFS_BASE_URL,
+
+  privateKeys: {
+    polygon: envVars.POLYGON_DEPLOYER_KEY,
+    mumbai: envVars.MUMBAI_DEPLOYER_KEY,
+  },
 
   replenish: {
     address: envVars.RP_ADDRESS,
