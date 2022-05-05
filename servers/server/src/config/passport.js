@@ -44,9 +44,10 @@ function findByOid(oid, fn) {
 
 // use as 'bearer'
 const bearerStrategy = new BearerStrategy(OIDCParams, ((token, done) => {
+  // TODO: use jwt.verify to remove trust of incoming message
   const decoded = jwt.decode(token)
   if (!decoded) {
-    throw new Error('Invalid JWT token')
+    throw new ApiError(401, 'Invalid JWT token')
   }
   findByOid(decoded.oid, (err, user) => {
     if (err) {
@@ -65,6 +66,16 @@ const bearerStrategy = new BearerStrategy(OIDCParams, ((token, done) => {
       last_name: decoded.family_name,
     }).then((newUserRecord) => done(null, newUserRecord.dataValues))
   })
+}))
+
+// use as 'bearer-auth0'
+const bearerWithAuth0Strategy = new BearerStrategy(OIDCParams, ((token, done) => {
+  // TODO: use jwt.verify to remove trust of incoming message
+  const decoded = jwt.decode(token)
+  if (!decoded) {
+    throw new ApiError(401, 'Invalid JWT Token')
+  }
+  done(null, { decoded, accessToken: token })
 }))
 
 export function initialize() {
@@ -91,7 +102,8 @@ export function initialize() {
   //
   // To do prototype (6), passReqToCallback must be set to true in the config.
   //-----------------------------------------------------------------------------
-  passport.use(bearerStrategy)
+  passport.use('bearer', bearerStrategy)
+  passport.use('bearer-auth0', bearerWithAuth0Strategy)
 
   return passport
 }

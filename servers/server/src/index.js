@@ -1,7 +1,8 @@
 import compression from 'compression'
 import cors from 'cors'
-import express from 'express'
 import session from 'cookie-session'
+import express from 'express'
+import { auth as openIDAuth } from 'express-openid-connect'
 import helmet from 'helmet'
 import httpStatus from 'http-status'
 import xss from 'xss-clean'
@@ -47,6 +48,19 @@ app.options('*', cors())
 const passport = passportHelper.initialize()
 app.use(passport.initialize())
 app.use(passport.session())
+
+// for Auth0 stuff
+// all routes are by default not protected. To protect, use requiresAuth() middleware
+app.use(openIDAuth({
+  authRequired: false,
+  // auth0Logout: true,
+  issuerBaseURL: 'https://dev-qdoaepgh.us.auth0.com',
+  baseURL: envVars.env === 'development' ? 'http://localhost:3000' : 'https://iblockcore.com',
+  clientID: 'ATIWCOwYIsDrBcsdqAiBq3V03sUhd7aN',
+  secret: 'LONG_RANDOM_STRING_OF_SECRET',
+  idpLogout: true,
+  // scope: 'openid profile email',
+}))
 
 // use cookie helper
 // app.use(cookieParser(envVars.cookieSecret))

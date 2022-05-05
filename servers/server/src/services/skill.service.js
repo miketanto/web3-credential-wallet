@@ -4,7 +4,8 @@ import { providers, utils } from 'ethers'
 import { provider } from '../constants'
 import { Skills, Wallets } from '../models'
 import { connectContractWithSigner, getAddressOfWallet, ApiError } from '../utils'
-import HHContract from '../contracts/hardhat_contracts.json'
+// TODO: dev should switch to `mumbai`, prod use `polygon`
+import HHContract from '../contracts/summit/mumbai/hardhat_contracts.json'
 
 const {
   address: MUMBAI_SKILLS_ADDRESS,
