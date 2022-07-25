@@ -20,7 +20,7 @@ export const fetchNftsBreakdown = (creatorAddress, isMusic = false) => async (di
       filter = {params:{owner:creatorAddress}}
     }
     
-    const { data } = await axios.get(`https://api.iblockcore.com/nft/get`, filter);
+    const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/nft/get`, filter);
     console.log(data.payload.nfts)
     dispatch(actions.getNftBreakdown.success(data.payload.nfts))
   } catch (err) {

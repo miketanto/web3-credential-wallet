@@ -92,33 +92,41 @@ export async function loadCreatedNFTs() {
 export async function buyNFT(NFT, signer) {
   const signedNFTMarket = ERC1155Market.connect(signer)
   const signedGiesCoin = GiesCoin.connect(signer)
-  const signedMerchCoin = MerchCoin.connect(signer)
+  // console.log(signedGiesCoin) //exists
+  // const signedMerchCoin = MerchCoin.connect(signer)
 
+  //One time ether transfer
   const { useGco: useGCO } = NFT
-
+  console.log("Signer:", signer)
   const price = ethers.utils.parseUnits(NFT.price.toString(), 'ether')
   console.log(`Price: ${price}`)
 
   if (useGCO) {
-    const allowance = await signedGiesCoin.allowance(signer._address, erc1155nftmarketaddress)
-    console.log(`Allowance: ${allowance}`)
-    if (allowance < price) {
-      const transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, price)
-      const tx = await transaction.wait()
-      console.log('GCO Spending limit approved.')
-      console.log(tx)
+    try{ //Added to find error
+      const allowance = await signedGiesCoin.allowance(signer.address, erc1155nftmarketaddress) //Failing here, ERC20 error?
+      console.log(`Allowance: ${allowance}`)
+      if (allowance < price) {
+        const transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, price)
+        const tx = await transaction.wait()
+        console.log('GCO Spending limit approved.')
+        console.log(tx)
+      }
     }
-  } else {
-    const allowance = await signedMerchCoin.allowance(signer._address, erc1155nftmarketaddress)
-    console.log(`Allowance: ${allowance}`)
-    if (allowance < price) {
-      console.log('here')
-      const transaction = await signedMerchCoin.approve(erc1155nftmarketaddress, price)
-      const tx = await transaction.wait()
-      console.log('MCO Spending limit approved.')
-      console.log(tx)
+    catch(e){
+      console.error(e)
     }
-  }
+  } 
+  // else {
+  //   const allowance = await signedMerchCoin.allowance(signer._address, erc1155nftmarketaddress)
+  //   console.log(`Allowance: ${allowance}`)
+  //   if (allowance < price) {
+  //     console.log('here')
+  //     const transaction = await signedMerchCoin.approve(erc1155nftmarketaddress, price)
+  //     const tx = await transaction.wait()
+  //     console.log('MCO Spending limit approved.')
+  //     console.log(tx)
+  //   }
+  // }
 
   const transaction = await signedNFTMarket.createMarketSale(erc1155nftaddress, NFT.itemId)
   const tx = await transaction.wait()
@@ -224,23 +232,22 @@ export async function listMarketItem(nftId, lister, price, useGco, amount) {
   const signedNFT = ERC1155NFT.connect(lister)
   const signedNFTMarket = ERC1155Market.connect(lister)
   const signedGiesCoin = GiesCoin.connect(lister)
-  
-  let transaction = await signedNFT.setApprovalForAll(erc1155nftmarketaddress, true);
+
+  let transaction = await signedNFT.setApprovalForAll(erc1155nftmarketaddress, true)
   let receipt = await transaction.wait()
 
-  /*let listingPrice = await signedNFTMarket.getListingPrice()
+  let listingPrice = await signedNFTMarket.getListingPrice()
   listingPrice = listingPrice.toString()
   let ethListingPrice = ethers.utils.formatEther(listingPrice)
   ethListingPrice *= amount
   console.log(ethListingPrice)
   listingPrice = ethers.utils.parseUnits(ethListingPrice.toString(), 'ether')
-  console.log(listingPrice.toString())*/
+  console.log(listingPrice.toString())
   const sellPrice = ethers.utils.parseUnits(price.toString(), 'ether')
-
-  /*console.log(`sell price: ${price}`)
-  console.log(`nftId: ${nftId}`)
+  console.log(price.toString())
+  console.log(sellPrice.toString())
   transaction = await signedGiesCoin.approve(erc1155nftmarketaddress, listingPrice)
-  receipt = await transaction.wait()*/
+  receipt = await transaction.wait()
 
   if (amount > 1) {
     transaction = await signedNFTMarket.createMultiMarketListing(nftId, sellPrice, useGco, amount)
@@ -249,6 +256,12 @@ export async function listMarketItem(nftId, lister, price, useGco, amount) {
     console.log(nftId)
     console.log(sellPrice.toString())
     console.log(useGco)
+    transaction = await signedGiesCoin.balanceOf(lister.address)
+    console.log(`Balance: ${transaction}`)
+    transaction = await signedGiesCoin.allowance(lister.address, erc1155nftmarketaddress)
+    console.log(`Allowance: ${transaction}`)
+    let ethSellPrice = ethers.utils.formatEther(sellPrice)
+    console.log(ethSellPrice.toString())
     transaction = await signedNFTMarket.createMarketListing(nftId, sellPrice, useGco)
     receipt = await transaction.wait()
   }

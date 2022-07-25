@@ -24,7 +24,7 @@ export async function get(options) {
     return await Promise.all(data.map(async (i) => {
       const tokenUri = i.meta_url
       const meta = await axios.get(tokenUri)
-      const price = i.price !== undefined ? ethers.utils.formatUnits(i.price.toString(), 'ether') : 0
+      const price = i.price !== undefined ? i.price : 0
       const item = {
         price: price.toString(),
         itemId: Number(i.item_id).toString(),

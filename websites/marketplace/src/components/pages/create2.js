@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Clock from "../template-components/Clock";
 import Footer from "../template-components/footer";
+import Modal from "../template-components/modal";
 import { createGlobalStyle } from "styled-components";
 import axios from 'axios'
 import { element } from "prop-types";
@@ -43,13 +44,6 @@ const GlobalStyles = createGlobalStyle`
     display: block !important;
   }
   .mainside{
-    .connect-wal{
-      display: none;
-    }
-    .logout{
-      display: flex;
-      align-items: center;
-    }
   }
   @media only screen and (max-width: 1199px) {
     .navbar{
@@ -81,7 +75,7 @@ export default function CreatePage() {
   const alert = useAlert();
   const [accessToken, setAccessToken] = useState()
   const [address, setAddress] = useState("")
-
+  const [show, setShow] = useState(false) //For pop-up
   const authenticationModule = new AzureAuthenticationContext(instance)
 
   const request = {
@@ -94,9 +88,10 @@ const accessTokenCallback = (userAccount) => {
   getAddress(userAccount.idTokenClaims.oid)
 }
 const getAddress = async(accessToken)=>{
-  const res = await axios.get("https://api.iblockcore.com/user/address", {headers: { Authorization: `Bearer ${accessToken}`}})
+  const res = await axios.get(`${process.env.REACT_APP_API_URL}/user/address`, {headers: { Authorization: `Bearer ${accessToken}`}})
   setAddress(res.data.payload.addresses.nftMarket)
-  const balanceres = await axios.get("https://api.iblockcore.com/user/balance", {headers: { Authorization: `Bearer ${accessToken}`}})
+  // console.log(res)
+  const balanceres = await axios.get(`${process.env.REACT_APP_API_URL}/user/balance`, {headers: { Authorization: `Bearer ${accessToken}`}})
   console.log(balanceres)
 }
   useEffect(() => {
@@ -145,7 +140,7 @@ const getAddress = async(accessToken)=>{
   
   const createItemCall = async(name, added, quantity, royalty)=>{
     console.log(address)
-    const res = await axios.post("https://api.iblockcore.com/nft/create",{
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/nft/create`,{
       name: name ,
       path:added.path,
       collection_id:1,
@@ -234,7 +229,7 @@ const getAddress = async(accessToken)=>{
       console.log('Call Func')
       const callParams = {price: price, amount: amount, useGco: true};
       if(currency!="GIES") callParams.useGco = false;
-      const res = await axios.post("https://api.iblockcore.com/nft/list",callParams,{
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/nft/list`,callParams,{
         headers: { Authorization: `Bearer ${accessToken}`, token: accessToken },
         params: {id: itemId}
       })
@@ -328,7 +323,7 @@ const getAddress = async(accessToken)=>{
                                             </div>
                                             <div id="tab_opt_3">
   </div>*/}
-                  </div>
+              </div>
                 </div>
 
                 <div className="spacer-20"></div>
@@ -360,7 +355,7 @@ const getAddress = async(accessToken)=>{
                   name="item_title"
                   id="item_title"
                   className="form-control"
-                  placeholder="e.g. 'Crypto Funk"
+                  placeholder="e.g. 'Crypto Funk'"
                   onChange={(e) =>
                     updateFormInput({ ...formInput, name: e.target.value })
                   }
@@ -480,11 +475,14 @@ const getAddress = async(accessToken)=>{
                   }
                   whileTap={{ scale: 0.9 }}
                   onClick={
-                     ()=>createMarketItem(toList)
+                     ()=>{
+                      createMarketItem(toList).then(async () => setShow(true))
+                     }
                   }
                 >
                   Create NFT
                 </motion.button>
+                <Modal onClose={()=>setShow(false)} show={show} onClick={()=>window.open("/allnfts", "_blank")}/>
               </div>
             </form>
           </div>

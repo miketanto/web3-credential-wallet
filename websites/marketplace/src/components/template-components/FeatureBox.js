@@ -19,6 +19,7 @@ const fadeInUp = keyframes`
 const featurebox= () => (
  <div className='row'>
             <div className="col-lg-4 col-md-6 mb-3">
+              <Link to="/profile">
                 <div className="feature-box f-boxed style-3">
                   <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
                     <i className="bg-color-2 i-boxed icon_wallet"></i>
@@ -28,11 +29,12 @@ const featurebox= () => (
                         <h4 className="">Set up your wallet</h4>
                       </Reveal>
                       <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                        <p className="">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+                        <p className="">Use your Illinois/Microsoft account to set up your wallet and start collecting.</p>
                       </Reveal>
                     </div>
                     <i className="wm icon_wallet"></i>
                 </div>
+              </Link>
             </div>
 
           <div className="col-lg-4 col-md-6 mb-3">
@@ -43,10 +45,10 @@ const featurebox= () => (
                 </Reveal>
                   <div className="text">
                     <Reveal className='onStep' keyframes={fadeInUp} delay={100} duration={600} triggerOnce>
-                      <h4 className="">Add your NFT's</h4>
+                      <h4 className="">Add your NFTs</h4>
                     </Reveal>
                     <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                      <p className="">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+                      <p className="">Create one or more NFTs using the create feature.</p>
                     </Reveal>
                   </div>
                   <i className="wm icon_cloud-upload_alt"></i>
@@ -55,20 +57,22 @@ const featurebox= () => (
           </div>
 
           <div className="col-lg-4 col-md-6 mb-3">
+            <Link to="/allnfts">
               <div className="feature-box f-boxed style-3">
                 <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
                   <i className=" bg-color-2 i-boxed icon_tags_alt"></i>
                 </Reveal>
                   <div className="text">
                     <Reveal className='onStep' keyframes={fadeInUp} delay={100} duration={600} triggerOnce>
-                      <h4 className="">Sell your NFT's</h4>
+                      <h4 className="">Sell your NFTs</h4>
                     </Reveal>
                     <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                      <p className="">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+                      <p className="">After creating or buying your NFTs sell them on the NFT marketplace.</p>
                     </Reveal>
                   </div>
                   <i className="wm icon_tags_alt"></i>
               </div>
+            </Link>
           </div>
         </div>
 );

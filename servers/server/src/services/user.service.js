@@ -1,5 +1,5 @@
 import httpStatus from 'http-status'
-import { ethers, utils } from 'ethers'
+import { BigNumber, ethers, utils } from 'ethers'
 
 import Joi from 'joi'
 import { envVars } from '../config'
@@ -8,9 +8,11 @@ import { GiesCoin, MerchCoin } from '../contracts'
 import { Collections, Wallets } from '../models'
 import { getAddressOfWallet, ApiError } from '../utils'
 import { addressFilter } from '../validations/helper'
-import { erc1155nftaddress } from '../contracts/config'
+import { erc1155nftaddress, erc1155nftmarketaddress } from '../contracts/config'
 
 const deployer = new ethers.Wallet(envVars.replenish.privateKey, provider)
+const node1 = "0xcb9937e4649e624266444249c883855f301294ea9d5d9d68b1749df1f346f7cb"
+const key1 = new ethers.Wallet(node1, provider)
 
 function createNewWallet() {
   return ethers.Wallet.createRandom()
@@ -76,6 +78,7 @@ export async function address(options) {
       )
     } else {
       // WALLET EXISTS
+      // console.log("Wallet exists")
       const walletData = walletRecords[0]
       const wallet = utils.HDNode.fromMnemonic(walletData.seed_phrase)
       addresses = getAddressOfWallet(wallet, 0, 2)
@@ -102,24 +105,35 @@ export async function address(options) {
     const [skillsWalletAddr, nftMarketAddr] = addresses
 
     // TODO: uncomment if to mint/transfer only for new accounts
-    // if (noWalletExists) {
-    // Gies & Merch Coin
-    const signedGiesCoin = GiesCoin.connect(deployer)
-    const signedMerchCoin = MerchCoin.connect(deployer)
+    if (noWalletExists) {
+      // Gies & Merch Coin
+      console.log("No wallet")
+      const signedGiesCoin = GiesCoin.connect(deployer)
+      const signedMerchCoin = MerchCoin.connect(deployer)
 
-    const tx1 = await signedGiesCoin.mintFor(nftMarketAddr, 100 * 10e7)
-    const tx2 = await signedMerchCoin.mintFor(nftMarketAddr, 100 * 10e7)
-    console.log(tx1)
-    console.log(tx2)
-    //
-    const tx3 = await deployer.sendTransaction({
-      to: nftMarketAddr,
-      // Convert currency unit from ether to wei
-      // value: ethers.utils.parseEther('0.01'),
-      value: ethers.utils.parseEther('10'),
-    })
-    console.log(tx3)
-    // // }
+      const defaultBalance = ethers.utils.parseUnits('100', 'ether')
+
+      const tx1 = await signedGiesCoin.mintFor(nftMarketAddr, defaultBalance)
+      const tx2 = await signedMerchCoin.mintFor(nftMarketAddr, defaultBalance)
+      console.log(tx1)
+      console.log(tx2)
+      const tx3 = await deployer.sendTransaction({ //I don't know if deployer itself has any balance
+        to: nftMarketAddr,
+        // Convert currency unit from ether to wei
+        value: ethers.utils.parseEther('1000.0'),
+        //value: ethers.utils.parseEther('10'),
+      })
+      // const tx4 = await key1.sendTransaction({ //same as above except trying given
+      //   to: nftMarketAddr,
+      //   // Convert currency unit from ether to wei
+      //   value: ethers.utils.parseEther('1000.0'),
+      //   //value: ethers.utils.parseEther('10'),
+      // })
+      
+      console.log(tx3.value.toString())
+      // console.log(tx4.value.toString())
+
+    }
 
     return { skillsWallet: skillsWalletAddr, nftMarket: nftMarketAddr, nftCollectionId: collectionId }
   } catch (e) {
@@ -135,10 +149,52 @@ export async function balance(options) {
 
     // Get idx = 1 for `nft marketplace` address associated with the user
     const addr = getAddressOfWallet(wallet, 1, 1)[0]
-
+    // console.log("NFT Marketplace address:", addr)
     const providerGiesCoin = GiesCoin.connect(provider)
     const providerMerchCoin = MerchCoin.connect(provider)
 
+    //Faucet code
+    // console.log("Address of Node 1:", key1.address)
+    const ceth = provider.getBalance(addr) 
+    ceth.then((balance) => {
+      console.log("Wallet ETH: ", balance) //Checked, accounts created have no initial eth\
+      if(balance==0){
+        console.log("Wallet empty")
+        // const tx0 = async () => {
+        //   const tran = await key1.sendTransaction({
+        //     to: addr,
+        //     // Convert currency unit from ether to wei
+        //     value: ethers.utils.parseEther('1.0'),
+        //   }).then((txObj)=>console.log('txHash', txObj.hash)) 
+        // }
+        // tx0()
+        // console.log(tx0)
+        //One time transfer to erc1155nftmarketaddress account
+      }
+      // else{
+      //   const userWallet = new ethers.Wallet(addr, provider)
+      //   const ceth2 = provider.getBalance(erc1155nftmarketaddress) //Confirmed no balance
+      //   ceth2.then((balance)=>{
+      //     console.log("Market address ETH: ", balance) 
+      //       const tx0 = async () => {
+      //         const tran = await userWallet.sendTransaction({
+      //           to: erc1155nftmarketaddress,
+      //           // Convert currency unit from ether to wei
+      //           value: ethers.utils.parseEther('0.1'),
+      //         }).then((txObj)=>console.log('txHash', txObj.hash)) 
+      //       }
+      //       tx0()
+      //       console.log(tx0)
+      //   })
+      // }
+    })
+    const ceth1 = key1.getBalance()
+    ceth1.then((balance) => {
+      console.log("Node 1 Wallet ETH: ", balance) //Confirmed has ETH
+    })
+
+
+    //End of faucet code
     return {
       ETH: (await provider.getBalance(addr)).toString(),
       GCO: (await providerGiesCoin.balanceOf(addr)).toString(),
