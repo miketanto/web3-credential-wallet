@@ -13,6 +13,10 @@ import useActiveWeb3React from "../../hooks/useActiveWeb3React";
 import { buyNft } from "../../utils/nftFunctions";
 import { loadMarketNFTs, getAmountListed } from "../../utils/nftFunctions";
 import { set } from "date-fns";
+import { useMsal } from '@azure/msal-react'
+import AzureAuthenticationContext from "../../configs/azure-context";
+import axios from "axios";
+import {erc1155nftaddress} from "../../configs/contracts/contract_config";
 
 const GlobalStyles = createGlobalStyle`
   * {
@@ -107,6 +111,8 @@ const GlobalStyles = createGlobalStyle`
 const ItemDetailRedux = ({ nftId }) => {
   const { library, account } = useActiveWeb3React();
 
+  const {accounts, instance}= useMsal();
+  const authenticationModule = new AzureAuthenticationContext(instance)
   const [openProperties, setOpenProperties] = useState(false);
   const [openAbout, setOpenAbout] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
@@ -123,20 +129,71 @@ const ItemDetailRedux = ({ nftId }) => {
   // const nft = nftDetailState.data ? nftDetailState.data : [];
   const [openCheckout, setOpenCheckout] = React.useState(false);
   const [openCheckoutbid, setOpenCheckoutbid] = React.useState(false);
+  const [accessToken, setAccessToken] = useState()
+
+  const [address, setAddress] = useState("")
+
+  const request = {
+    scopes: ['User.Read'],
+    account: accounts[0],
+  }
+
+  const accessTokenCallback = (userAccount) => {
+    setAccessToken(userAccount.idTokenClaims.oid)
+    getAddress(userAccount.idTokenClaims.oid)
+  }
+
+  const getAddress = async(accessToken)=>{
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/user/address`, {headers: { Authorization: `Bearer ${accessToken}`}})
+    setAddress(res.data.payload.addresses.nftMarket)
+    // console.log(res)
+    const balanceres = await axios.get(`${process.env.REACT_APP_API_URL}/user/balance`, {headers: { Authorization: `Bearer ${accessToken}`}})
+    console.log(balanceres)
+  }
+
+  //const { user: { address, signer }, id } = options
+
 
   useEffect(() => {
+    let first
     const fetchState = async () => {
-      const item = items.filter((item) => item.itemId == nftId);
-      setNft({ ...item[0], currentOwner: item[0].currentOwner.slice(2, 8) });
-      console.log(item);
-  
-      let amount = await getAmountListed(item[0].tokenId);
-      setAvailable(amount);
-  
-      console.log(nft.tags);
-    };
-    fetchState();
+      let item
+      if(items.length!==0){
+        item = items.filter((item) => item.itemId == nftId);
+        window.sessionStorage.setItem("item", JSON.stringify(item)) //Let's item persist in session storage so refreshes don't clear it
+      }
+      first = JSON.parse(window.sessionStorage.getItem("item"))
+      setNft({ ...first[0], currentOwner: first[0].currentOwner.slice(2, 8) }); 
+
+      // let amount = await getAmountListed(item[0].tokenId); // these two lines cause some problems
+      // setAvailable(amount); 
+      };
+    fetchState()
+
+    instance.acquireTokenSilent(request)
+        .then(async (res) => {
+          setAccessToken(res.accessToken)
+          console.log('getAccount')
+          //getAddress(res.accessToken)
+        })
+        .catch((e) => {
+          authenticationModule.login('loginPopup',accessTokenCallback)
+        })
   }, [dispatch, nftId]);
+
+  const buyNft = async(nft)=>{
+    console.log(nft)
+    const quantity = 1
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/nft/buy`,{
+      id: Number(nft.itemId),
+      quantity
+    },{
+      headers: { Authorization: `Bearer ${accessToken}`, token: accessToken },
+      params: {id: Number(nft.itemId)}
+    })
+    console.log(res)
+    return res
+  }
 
   return (
     <div>

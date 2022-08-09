@@ -210,7 +210,7 @@ render() {
                                     </div>
 
                       <h5>Title</h5>
-                      <input type="text" name="item_title" id="item_title" className="form-control" placeholder="e.g. 'Crypto Funk" onChange={evt => this.updateTitle(evt)}/>
+                      <input type="text" name="item_title" id="item_title" className="form-control" placeholder="e.g. 'Crypto Funk'" onChange={evt => this.updateTitle(evt)}/>
 
                       <div className="spacer-10"></div>
 

@@ -15,8 +15,7 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, creatorAddress =
     const dispatch = useDispatch();
     const nftItems = useSelector(selectors.nftItems);
     const nfts = nftItems ? shuffle ? shuffleArray(nftItems) : nftItems : [];
-    //const filterednfts = removeDuplicates(nfts);
-    const filterednfts = nftItems
+    const filterednfts = removeDuplicates(nfts);
     const [height, setHeight] = useState(0);
     const {accounts, instance}= useMsal();
 
@@ -58,6 +57,7 @@ const ColumnNewRedux = ({ showLoadMore = true, shuffle = false, creatorAddress =
 
     return (
         <div className='row'>
+            {filterednfts.length == 0 && <h5>No Items to Display</h5>}
             {filterednfts && filterednfts.map( (nft, index) => (
                 <NftCard nft={nft} key={index} onImgLoad={onImgLoad} height={height} />
             ))}

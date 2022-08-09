@@ -192,8 +192,8 @@ const Header = function({ className }) {
                         {openMenu3 && (
                           <div className='item-dropdown'>
                             <div className="dropdown" onClick={closeMenu3}>
-                              <NavLink to="/profile/creatorDashboard" onClick={() => btn_icon(!showmenu)}>My Collections</NavLink>
-                              <NavLink to="/profile/nftDashboard" onClick={() => btn_icon(!showmenu)}>My NFTs</NavLink>
+                              <NavLink to="/profile" onClick={() => btn_icon(!showmenu)}>My Collections</NavLink>
+                              <NavLink to="/profile" onClick={() => btn_icon(!showmenu)}>My NFTs</NavLink>
                             </div>
                           </div>
                         )}
@@ -214,7 +214,9 @@ const Header = function({ className }) {
                       <div ref={ref1}>
                           <div className="dropdown-custom dropdown-toggle btn" 
                              onMouseEnter={handleBtnClick1} onMouseLeave={closeMenu1}>
+                            <NavLink to="/allnfts" style={{zIndex: "2"}} onClick={() => btn_icon(!showmenu)}>
                             Explore
+                            </NavLink>
                             <span className='lines'></span>
                             {openMenu1 && (
                           <div className='item-dropdown'>
@@ -242,7 +244,7 @@ const Header = function({ className }) {
                             <div className="item-dropdown">
                               <div className="dropdown" onClick={closeMenu2}>
                                 <NavLink to="/create2" onClick={() => btn_icon(!showmenu)}>Single NFT</NavLink>
-                                <NavLink to="/create3" onClick={() => btn_icon(!showmenu)}>Multiple NFTs</NavLink>
+                                <NavLink to="/create2" onClick={() => btn_icon(!showmenu)}>Multiple NFTs</NavLink>
                               </div>
                             </div>
                           )}
@@ -253,13 +255,15 @@ const Header = function({ className }) {
                       <div ref={ref3}>
                           <div className="dropdown-custom dropdown-toggle btn" 
                              onMouseEnter={handleBtnClick3} onMouseLeave={closeMenu3}>
+                            <NavLink to="/profile" style={{ zIndex: '2'}}>
                             Profile
                             <span className='lines'></span>
+                            </NavLink>
                             {openMenu3 && (
                           <div className='item-dropdown'>
                             <div className="dropdown" onClick={closeMenu3}>
-                              <NavLink to="/profile/creatorDashboard" onClick={() => btn_icon(!showmenu)}>My Collections</NavLink>
-                              <NavLink to="/profile/nftDashboard" onClick={() => btn_icon(!showmenu)}>My NFTs</NavLink>
+                              <NavLink to="/profile" onClick={() => btn_icon(!showmenu)}>My Collections</NavLink>
+                              <NavLink to="/profile" onClick={() => btn_icon(!showmenu)}>My NFTs</NavLink>
                             </div>
                           </div>
                         )}

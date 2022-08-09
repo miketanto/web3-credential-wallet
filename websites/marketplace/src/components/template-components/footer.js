@@ -10,7 +10,7 @@ const footer= () => (
                             <h5>Marketplace</h5>
                             <ul >
                                 <li><Link to="/allnfts">All NFTs</Link></li>
-                                <li><Link to="/create2">Create Single NFT</Link></li>
+                                <li><Link to="/create2">Create A Single NFT</Link></li>
                                 <li><Link to="/create3">Create Multiple NFTs</Link></li>
                                 
                             </ul>
@@ -22,7 +22,7 @@ const footer= () => (
                             <ul>
                                 <a target="_blank" href="https://giesgroups.illinois.edu/disruptionlab/home/">About Us</a>
                                 <div></div>
-                                <a target="_blank" href="https://iblockcore.com/explorer">Iblockcore</a>
+                                <a target="_blank" href="https://iblockcore.com/explorer">iBlockCore</a>
                                 
                             </ul>
                         </div>

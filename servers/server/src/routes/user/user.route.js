@@ -31,6 +31,7 @@ router.get(
   getWalletFromEmail(),
   catchAsync(async (req, res, next) => {
     res.locals = await userService.balance({ user: req.user })
+    console.log("Balance: ", res.locals) //Testing, equivalent in website/serer/src/services/user.service.js -- this one actually does something
     next()
   }),
 )

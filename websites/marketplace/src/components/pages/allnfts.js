@@ -13,6 +13,13 @@ const allnfts = () => (
   <div>
     <GlobalStyles/>
     <section className='container'>
+      <div className='row'> 
+        <div className='col-lg-12'>  
+        <div className='text-center'> 
+          <h2>  </h2>
+        </div>
+        </div>
+      </div> 
       <div className='row'>
         <div className='col-lg-12'>
           <div className='text-center'>

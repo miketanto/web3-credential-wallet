@@ -32,6 +32,7 @@ class Particle extends Component {
             },
           },
           fpsLimit: 70,
+          fullScreen: false,
           interactivity: {
             detectsOn: "canvas",
             events: {

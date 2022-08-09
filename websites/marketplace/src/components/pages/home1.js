@@ -41,14 +41,13 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 `;
-
-
+ /*Issue of footer is that position of particle is absolute so it overlaps*/
 const homeone= () => (
   <div>
   <GlobalStyles />
       <section className="jumbotron no-bg" style={{backgroundColor:'#13294B'}}>
-       <Particle />
-         <SliderMainParticle />
+        <Particle />
+        <SliderMainParticle />
       </section>
 
       <section className='container'>
@@ -80,8 +79,7 @@ const homeone= () => (
         </div>
       </section>
 
-    <Footer />
-
+        <Footer />
   </div>
 );
 export default homeone;

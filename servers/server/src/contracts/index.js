@@ -4,6 +4,7 @@ import {
   mcoaddress, gcoaddress, nftaddress, nftmarketaddress,
   erc1155nftmarketaddress, erc1155nftaddress,
 } from './config'
+import { envVars } from '../config'
 import mco from './contracts/MerchCoin.json'
 import gco from './contracts/GiesCoin.json'
 import nft from './contracts/NFT.json'
@@ -13,7 +14,7 @@ import erc1155market from './contracts/ERC1155Market.json'
 import { getVanillaContract } from '../utils/contract'
 
 /* eslint-disable global-require */
-const Web3Provider = new ethers.providers.StaticJsonRpcProvider(process.env.REACT_APP_WEB3_URL)
+const Web3Provider = new ethers.providers.StaticJsonRpcProvider(envVars.web3NodeUrl)
 export const MerchCoin = getVanillaContract(mcoaddress, mco.abi, Web3Provider)
 export const GiesCoin = getVanillaContract(gcoaddress, gco.abi, Web3Provider)
 export const NFT = getVanillaContract(nftaddress, nft.abi, Web3Provider)

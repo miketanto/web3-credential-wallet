@@ -1,4 +1,6 @@
+import { array } from "prop-types";
 import { createSelector, createStructuredSelector } from "reselect";
+import store from "..";
 
 
 //Store Selectors
@@ -39,8 +41,19 @@ export const nftItems = createSelector(nftFilter, nftBreakdownState, ( filters, 
         return [];
     }
 
-    if(categories.size) {
-        data = data.filter( nft => categories.has(nft.category));
+    if(categories.size) { //Use same formats for status, itemtype, and collections -- others not really necessary right now beause other attributes unable to be added
+        let copy = [...data] //Using a copy to not disturb data
+        let cat = Array.from(categories)
+        for(let i=0; i<copy.length; i++){
+            for(let j=0; j<categories.size; j++){
+                if(copy[i].tags.includes(cat[j])==false){
+                    copy.splice(i, 1) 
+                    i-- //Decrement i since size has gone down
+                    break
+                }
+            }
+        }
+        return copy
     }
     if(status.size) {
         data = data.filter( nft => status.has(nft.status));
@@ -56,6 +69,5 @@ export const nftItems = createSelector(nftFilter, nftBreakdownState, ( filters, 
         console.log(pattern)
         data = data.filter( nft => nft.title.match(pattern));
     }
-
     return data;
 });
