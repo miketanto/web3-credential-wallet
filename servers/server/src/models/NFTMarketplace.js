@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize'
 
 import sequelize from './sequelize'
-import { Users } from './SkillsWallet'
+import { Users } from './users'
 
 export const Collections = sequelize.define('Collections', {
   collection_id: {

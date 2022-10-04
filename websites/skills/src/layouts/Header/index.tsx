@@ -4,6 +4,7 @@ import React, { ElementType } from 'react'
 import {
   IoHome, IoLogInOutline, IoMail, IoPerson, IoWallet,
 } from 'react-icons/io5'
+import { useAuth0 } from '@auth0/auth0-react'
 import { MdSpaceDashboard } from 'react-icons/md'
 import { NavLink } from 'react-router-dom'
 
@@ -26,6 +27,9 @@ function NavItem({ text, to, icon }: { text: string, to: string, icon: ElementTy
 }
 
 export default function Header() {
+  const {
+    user, isAuthenticated, isLoading, getAccessTokenSilently,
+  } = useAuth0()
   return (
     <nav className="sticky inset-x-0 top-0 w-screen bg-white shadow">
       <Container flexRow className="items-center py-2">
@@ -33,56 +37,35 @@ export default function Header() {
           <div className="py-1 px-3 text-white bg-illini-blue text-xl font-bold rounded">iSkills Wallet</div>
         </section>
         <div className="grow" />
+        {isAuthenticated?
         <section className="flex flex-row items-center space-x-6">
           <NavItem
             text="Home"
             to="/"
             icon={IoHome}
           />
-          <AuthenticatedTemplate>
             <NavItem
-              text="My Skills"
-              to="/skills"
-              icon={MdSpaceDashboard}
-            />
+            text="My Skills"
+            to="/skills"
+            icon={MdSpaceDashboard}
+          />
+          <NavItem
+            text="Manage Skills"
+            to="/manage"
+            icon={MdSpaceDashboard}
+          />
+          <NavItem
+            text="Account"
+            to="/account"
+            icon={IoPerson}
+          /> </section>:
             <NavItem
-              text="Manage Skills"
-              to="/manage"
-              icon={MdSpaceDashboard}
-            />
-            {
-              // <NavItem
-              //   text="My Wallet"
-              //   to="/wallet"
-              //   icon={IoWallet}
-              // />
-              // <NavItem
-              // text="Inbox"
-              // to="/inbox"
-              // icon={IoMail}
-              // />
-            }
-            <NavItem
-              text="Account"
-              to="/account"
-              icon={IoPerson}
-            />
-          </AuthenticatedTemplate>
-          <UnauthenticatedTemplate>
-            <NavItem
-              text="Sign In"
-              to="/auth"
-              icon={IoLogInOutline}
-            />
-          </UnauthenticatedTemplate>
-          {
-            // <div>
-            //   <div className="h-12 w-12 bg-stone-100 border border-stone-200 rounded-full">
-            //     <span className="sr-only">Profile Image</span>
-            //   </div>
-            // </div>
-          }
-        </section>
+            text="Sign In"
+            to="/auth"
+            icon={IoLogInOutline}
+          />
+        }
+       
       </Container>
     </nav>
   )
