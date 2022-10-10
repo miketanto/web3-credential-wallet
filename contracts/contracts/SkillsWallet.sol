@@ -33,15 +33,16 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 // Static analyzer: slither contracts/SkillsWallet.sol --solc-remaps @openzeppelin=node_modules/@openzeppelin
 
 // TODO: Implement ERC1155Receiver to add custom hooks on receiving ERC1155.
-// NOTE:
-// Current version of contract doesn't have idea of credential owernship by credentialers.
-// In other words, any credentialer can issue any credential. This doesn't make sense if a credential (faculty)
-// issues a credential irrelevant of their department. Thus, in version 2, we should:
-// TODO: Restrict credentialer to issue only certain credentials (limited by scope).
 
 //TODO:
-//Need a way to add clearances to credentialer.
-//Make sure string length is bounded
+// Make sure string length is bounded
+// URIStorage with ipfs hashes
+
+//TODO:
+//Testing:
+//1. Test New Admin Feature
+//2. Test New clearance Feature
+//3. Test New URI storage feature
 
 contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
     using Counters for Counters.Counter;
@@ -54,9 +55,9 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
 
     EnumerableSet.AddressSet private _credentialers; // accounts with authority to mint credentials
 
-    EnumberableSet.Bytes32Set private _credentialTypes; //Typecheck if real
+    EnumerableSet.Bytes32Set private _credentialTypes; //Typecheck if real
 
-    EnumberableSet.Bytes32Set private _credentialerClearance; //Key is hash of type and address
+    EnumerableSet.Bytes32Set private _credentialerClearance; //Key is hash of type and address
 
     mapping(address => bytes32[]) private _credentialerClearances;
 
@@ -66,7 +67,8 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
 
     uint256[] private _tokenIdArray;
 
-    constructor(string memory uri, address credentialer) ERC1155(uri) {
+    constructor(string memory _uri, address credentialer) ERC1155(_uri) {
+        _setBaseURI(_uri);
         _credentialers.add(credentialer);
         admin = credentialer;
     }
@@ -94,12 +96,12 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
             _credentialers.contains(_msgSender()) == true,
             "Not an approved credential creator"
         );
-        bytes32 memory typeHash = keccak256(_credentialType);
+        bytes32 typeHash = keccak256(abi.encodePacked(_credentialType));
         require(
             _credentialTypes.contains(typeHash) == true,
             "Not a valid credential type"
         );
-        bytes32 memory clearanceHash = keccak256(
+        bytes32 clearanceHash = keccak256(
             abi.encodePacked(typeHash, _msgSender())
         );
         require(
@@ -144,8 +146,17 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
         _safeBatchTransferFrom(from, to, ids, amounts, data);
     }
 
+    function uri(uint256 _tokenId)
+        public
+        view
+        override(ERC1155, ERC1155URIStorage)
+        returns (string memory)
+    {
+        return ERC1155URIStorage.uri(_tokenId);
+    }
+
     // Contract-specific
-    function switchAdmin(address _newAdmin) onlyAdmin {
+    function switchAdmin(address _newAdmin) public onlyAdmin {
         require(
             _credentialers.contains(_newAdmin),
             "New Admin has to be a credentialer"
@@ -156,19 +167,21 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
     function addCredentialer(address credentialer, string memory clearance)
         public
         onlyAdmin
+        returns (bytes32)
     {
         // New credentialer is now authorized to call smart contract functions
-        bytes32 storage typeHash = keccak256(clearance);
+        bytes32 typeHash = keccak256(abi.encodePacked(clearance));
         require(
             _credentialTypes.contains(typeHash),
             "Clearance type does not exist."
         );
-        bytes32 storage clearanceHash = keccak256(
-            abi.encodePacked(typeHash, _msgSender())
+        bytes32 clearanceHash = keccak256(
+            abi.encodePacked(typeHash, credentialer)
         );
         _credentialerClearance.add(clearanceHash);
         _credentialerClearances[credentialer].push(typeHash);
         _credentialers.add(credentialer);
+        return (clearanceHash);
     }
 
     function removeCredentialer(address credentialer) public onlyAdmin {
@@ -186,15 +199,35 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
             i < _credentialerClearances[credentialer].length;
             i++
         ) {
-            bytes32 memory typeHash = keccak256(
-                _credentialerClearances[credentialer][i]
+            bytes32 typeHash = keccak256(
+                abi.encodePacked(_credentialerClearances[credentialer][i])
             );
-            bytes32 memory clearanceHash = keccak256(
+            bytes32 clearanceHash = keccak256(
                 abi.encodePacked(typeHash, credentialer)
             );
             _credentialerClearance.remove(clearanceHash);
         }
-        delete _credentialerClearances(credentialer);
+        delete _credentialerClearances[credentialer];
+    }
+
+    function addCredentialerClearance(
+        address _credentialer,
+        string memory _credentialType
+    ) public onlyAdmin {
+        bytes32 typeHash = keccak256(abi.encodePacked(_credentialType));
+        require(
+            _credentialTypes.contains(typeHash) == true,
+            "Not a valid credential type"
+        );
+        require(
+            _credentialerClearances[_credentialer].length < 3,
+            "Maximum of 3 clearances per credentialer"
+        );
+        _credentialerClearances[_credentialer].push(typeHash);
+        bytes32 clearanceHash = keccak256(
+            abi.encodePacked(typeHash, _credentialer)
+        );
+        _credentialerClearance.add(clearanceHash);
     }
 
     function isCredentialer(address addr) public view returns (bool) {
@@ -205,17 +238,23 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
         return _credentialers.length();
     }
 
-    function createCredentialType(string memory _credentialType) onlyAdmin {
-        bytes32 storage typeHash = keccak256(_credentialType); //might have to be storage here
+    function createCredentialType(string memory _credentialType)
+        public
+        onlyAdmin
+    {
+        bytes32 typeHash = keccak256(abi.encodePacked(_credentialType)); //might have to be storage here
         _credentialTypes.add(typeHash);
     }
 
-    function removeCredentialType(string memory _credentialType) onlyAdmin {
-        bytes32 storage typeHash = keccak256(_credentialType); //might have to be storage here
+    function removeCredentialType(string memory _credentialType)
+        public
+        onlyAdmin
+    {
+        bytes32 typeHash = keccak256(abi.encodePacked(_credentialType)); //might have to be storage here
         _credentialTypes.remove(typeHash);
     }
 
-    function createCredential(string memory _credentialType)
+    function createCredential(string memory _credentialType, string memory _uri)
         public
         onlyClearedCredentialer(_credentialType)
         returns (uint256)
@@ -224,7 +263,7 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
         uint256 newCredId = _tokenIds.current();
         _tokenIdArray.push(newCredId);
         _credentialIdType[newCredId] = _credentialType;
-
+        _setURI(newCredId, _uri);
         emit Create(msg.sender, newCredId, block.timestamp);
         // _mint(receiver, newCredId, 1, "");
         return newCredId;
@@ -236,12 +275,14 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
     {
         require(credId <= _tokenIds.current(), "Invalid credential ID");
 
-        bytes32 memory typeHash = keccak256(_credentialIdType[credId]);
+        bytes32 typeHash = keccak256(
+            abi.encodePacked(_credentialIdType[credId])
+        );
         require(
             _credentialTypes.contains(typeHash) == true,
             "Not a valid credential type"
         );
-        bytes32 memory clearanceHash = keccak256(
+        bytes32 clearanceHash = keccak256(
             abi.encodePacked(typeHash, _msgSender())
         );
         require(
