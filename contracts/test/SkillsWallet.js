@@ -61,11 +61,11 @@ describe("SkillsWallet", function () {
     });
 
     describe("Create Credential", function () {
-      it("Should create a Credential", async function () {
+      it("Should create a Credential with proper Uri", async function () {
         const { otherAccount, skillswallet,credentialType} = await loadFixture(basicSetupFixture);
         const uri = "firstCredential"
         const returnval = await skillswallet.connect(otherAccount).createCredential(credentialType,uri)
-        expect(returnval.value).to.equal(0);
+        expect(await skillswallet.uri(1)).to.equal("https://www.baseURI.com/firstCredential")
       });
     });
 

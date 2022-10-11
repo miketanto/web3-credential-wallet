@@ -265,7 +265,6 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
         _credentialIdType[newCredId] = _credentialType;
         _setURI(newCredId, _uri);
         emit Create(msg.sender, newCredId, block.timestamp);
-        // _mint(receiver, newCredId, 1, "");
         return newCredId;
     }
 
