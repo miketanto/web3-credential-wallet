@@ -26,6 +26,42 @@ const arr = [
     name: 'Hard Work',
     description: 'Description',
   },
+  {
+    name: 'Excel',
+    description: 'Description',
+  },
+  {
+    name: 'Git',
+    description: 'Description',
+  },
+  {
+    name: 'Postman',
+    description: 'Description',
+  },
+  {
+    name: 'Powerpoint',
+    description: 'Description',
+  },
+  {
+    name: 'Discrete Structures',
+    description: 'Description',
+  },
+  {
+    name: 'Artifiical Intelligence',
+    description: 'Description',
+  },
+  {
+    name: 'Data Science',
+    description: 'Description',
+  },
+  {
+    name: 'Cybersecurity',
+    description: 'Description',
+  },
+  {
+    name: 'Quantum Computing',
+    description: 'Description',
+  },
 ]
 
 export default function GalleryHome() {
@@ -42,7 +78,7 @@ export default function GalleryHome() {
       }
     })
     .map((data) => (
-      <div key={data.name} className="w-1/3 ">
+      <div key={data.name} className="w-1/3 h-1/15 ">
         <img src={image} alt="Avatar" />
         <div className="text-center">
           <h4>
@@ -82,7 +118,7 @@ export default function GalleryHome() {
           />
         </div>
       </form>
-      <div className="grid items-center md:grid-cols-2 lg:grid-cols-3 mt-10 justify-items-center">{arrData}</div>
+      <div className="border-solid border-black grid items-center md:grid-cols-3 lg:grid-cols-5 mt-10 justify-items-center ">{arrData}</div>
     </>
   )
 }
