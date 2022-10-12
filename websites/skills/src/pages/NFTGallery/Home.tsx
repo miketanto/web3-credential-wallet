@@ -72,7 +72,7 @@ const arr = [
     image: mathImage,
   },
   {
-    name: 'Artifiical Intelligence',
+    name: 'Artificial Intelligence',
     description: 'Description',
     image: aiImage,
   },
