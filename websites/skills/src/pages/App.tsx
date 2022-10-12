@@ -20,6 +20,8 @@ import Wallet from './Wallet'
 import WalletHome from './Wallet/Home'
 import ManageSkills from './ManageSkills'
 import ManageSkillsHome from './ManageSkills/Home'
+import Gallery from './NFTGallery'
+import GalleryHome from './NFTGallery/Home'
 
 function AppWrapper({ children }: { children: ReactNode }) {
   return <div className="w-screen min-h-screen bg-stone-100 dark:bg-black text-black dark:text-white">{children}</div>
@@ -58,6 +60,9 @@ export default function App() {
             </Route>
             <Route path="wallet" element={<Wallet />}>
               <Route index element={<WalletHome />} />
+            </Route>
+            <Route path="nftgallery" element={<Gallery />}>
+              <Route index element={<GalleryHome />} />
             </Route>
           </Route>
         </Routes>
