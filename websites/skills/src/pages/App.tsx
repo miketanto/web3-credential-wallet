@@ -22,6 +22,8 @@ import ManageSkills from './ManageSkills'
 import ManageSkillsHome from './ManageSkills/Home'
 import Gallery from './NFTGallery'
 import GalleryHome from './NFTGallery/Home'
+import RecruiterPage from './RecruiterPage'
+import RecruiterPageHome from './RecruiterPage/Home'
 
 function AppWrapper({ children }: { children: ReactNode }) {
   return <div className="w-screen min-h-screen bg-stone-100 dark:bg-black text-black dark:text-white">{children}</div>
@@ -63,6 +65,9 @@ export default function App() {
             </Route>
             <Route path="nftgallery" element={<Gallery />}>
               <Route index element={<GalleryHome />} />
+            </Route>
+            <Route path="recruiterpage" element={<RecruiterPage />}>
+              <Route index element={<RecruiterPageHome />} />
             </Route>
           </Route>
         </Routes>
