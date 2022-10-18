@@ -49,53 +49,75 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
-    // Since Skill NFT is burnable, we manually increment the tokenId to avoid ID collision
-    // ie. using _tokenIdArray.length may not return unique value
+    //ERC-1155 Token Counters
     Counters.Counter private _tokenIds;
+
+    uint256[] private _tokenIdArray;
+
+    //Roles
+    address private admin;
+
+    EnumerableSet.AddressSet private _heads;
 
     EnumerableSet.AddressSet private _credentialers; // accounts with authority to mint credentials
 
-    EnumerableSet.Bytes32Set private _credentialTypes; //Typecheck if real
-
+    //Clearance Bindings
     EnumerableSet.Bytes32Set private _credentialerClearance; //Key is hash of type and address
 
     mapping(address => bytes32[]) private _credentialerClearances;
 
-    mapping(uint256 => string) private _credentialIdType;
+    //Type Bindings
+    EnumerableSet.Bytes32Set private _credentialTypes; //Typecheck if real
 
-    address private admin;
+    mapping(uint256 => string) private _credentialIdType; //The credential type for a specific credential ID
 
-    uint256[] private _tokenIdArray;
-
+    //Constructor
     constructor(string memory _uri, address credentialer) ERC1155(_uri) {
         _setBaseURI(_uri);
         _credentialers.add(credentialer);
+        _heads.add(credentialer);
         admin = credentialer;
     }
 
     // Events
-
     event Create(
         address indexed credentialer,
         uint256 indexed credentialId,
         uint256 time
     );
 
+    //Event for Adding a credentialer
+    //Event for removing a credentialer
+    //Event for Adding Head
+    //Event for Removing Head
+
     // Modifiers
+    modifier onlyAdmin() {
+        require((admin == _msgSender()) == true, "Not the contract admin");
+        _;
+    }
+
+    modifier onlyHead() {
+        require(_heads.contains(_msgSender()) == true, "Not an approved head");
+        _;
+    }
 
     modifier onlyCredentialer() {
         require(
             _credentialers.contains(_msgSender()) == true,
-            "Not an approved credential creator"
+            "Not an approved credentialer"
         );
         _;
     }
 
-    modifier onlyClearedCredentialer(string memory _credentialType) {
+    modifier typeValidator(string memory _type) {
         require(
-            _credentialers.contains(_msgSender()) == true,
-            "Not an approved credential creator"
+            _credentialTypes.contains(keccak256(abi.encodePacked(_type))) ==
+                true,
+            "Invalid credential type"
         );
+    }
+    modifier onlyCleared(string memory _credentialType) {
         bytes32 typeHash = keccak256(abi.encodePacked(_credentialType));
         require(
             _credentialTypes.contains(typeHash) == true,
@@ -111,13 +133,7 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
         _;
     }
 
-    modifier onlyAdmin() {
-        require((admin == _msgSender()) == true, "Not the contract admin");
-        _;
-    }
-
     // Override
-
     function safeTransferFrom(
         address from,
         address to,
@@ -155,7 +171,8 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
         return ERC1155URIStorage.uri(_tokenId);
     }
 
-    // Contract-specific
+    //Admin Layer Functions
+
     function switchAdmin(address _newAdmin) public onlyAdmin {
         require(
             _credentialers.contains(_newAdmin),
@@ -164,27 +181,64 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
         admin = _newAdmin;
     }
 
-    function addCredentialer(address credentialer, string memory clearance)
+    function addCredentialerClearance(
+        address _credentialer,
+        string memory _type
+    ) public onlyHead typeValidator(_type) {
+        require(
+            _credentialerClearances[_credentialer].length < 3,
+            "Maximum of 3 clearances per credentialer"
+        );
+        bytes32 typeHash = keccak256(abi.encodePacked(_type));
+        if (msg_sender() != admin) {
+            bytes32 senderClearanceHash = keccak256(
+                abi.encodePacked(typeHash, msg_sender())
+            );
+            require(
+                _credentialerClearance.contains(senderClearanceHash) == true,
+                "Not cleared to modify current type"
+            );
+        }
+
+        bytes32 clearanceHash = keccak256(
+            abi.encodePacked(typeHash, _credentialer)
+        );
+
+        require(
+            _credentialerClearance.contains(clearanceHash) == false,
+            "Credentialer already has this clearance"
+        );
+
+        _credentialerClearance.add(clearanceHash);
+        _credentialerClearances[_credentialer].push(typeHash);
+    }
+
+    function addCredentialer(address _credentialer, string memory _type)
         public
-        onlyAdmin
+        onlyHead
         returns (bytes32)
     {
         // New credentialer is now authorized to call smart contract functions
-        bytes32 typeHash = keccak256(abi.encodePacked(clearance));
-        require(
-            _credentialTypes.contains(typeHash),
-            "Clearance type does not exist."
-        );
-        bytes32 clearanceHash = keccak256(
-            abi.encodePacked(typeHash, credentialer)
-        );
-        _credentialerClearance.add(clearanceHash);
-        _credentialerClearances[credentialer].push(typeHash);
+        addCredentialerClearance(_credentialer, _type);
         _credentialers.add(credentialer);
         return (clearanceHash);
     }
 
-    function removeCredentialer(address credentialer) public onlyAdmin {
+    function addHead(address _head, string memory _type) public onlyAdmin {
+        if (_credentialers.contains(_head) == false) {
+            addCredentialer(_head, _type);
+        }
+        _heads.add(_head);
+        addCredentialerClearance(_head, _type);
+    }
+
+    //Credentialer Layer
+
+    function removeHead(address _head) public onlyAdmin {
+        _heads.remove(_head);
+    }
+
+    function removeCredentialer(address _credentialer) public onlyHead {
         require(
             _credentialers.contains(_msgSender()) == true,
             "Credentialer does not exist"
@@ -193,50 +247,65 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
             _credentialers.length() - 1 > 0,
             "At least one credentialer has to exist"
         );
-        _credentialers.remove(credentialer);
+        _credentialers.remove(_credentialer);
         for (
             uint256 i = 0;
-            i < _credentialerClearances[credentialer].length;
+            i < _credentialerClearances[_credentialer].length;
             i++
         ) {
             bytes32 typeHash = keccak256(
-                abi.encodePacked(_credentialerClearances[credentialer][i])
+                abi.encodePacked(_credentialerClearances[_credentialer][i])
             );
             bytes32 clearanceHash = keccak256(
-                abi.encodePacked(typeHash, credentialer)
+                abi.encodePacked(typeHash, _credentialer)
             );
             _credentialerClearance.remove(clearanceHash);
         }
-        delete _credentialerClearances[credentialer];
+        delete _credentialerClearances[_credentialer];
+        if (_heads.contains(_credentialer) == true) removeHead(_credentialer);
     }
 
-    function addCredentialerClearance(
+    function removeCredentialerClearance(
         address _credentialer,
-        string memory _credentialType
-    ) public onlyAdmin {
-        bytes32 typeHash = keccak256(abi.encodePacked(_credentialType));
+        string memory _type
+    ) public onlyHead typeValidator(_type) {
         require(
-            _credentialTypes.contains(typeHash) == true,
-            "Not a valid credential type"
+            _credentialerClearances[_credentialer].length - 1 > 0,
+            "At least one clearance for each credentialer"
         );
-        require(
-            _credentialerClearances[_credentialer].length < 3,
-            "Maximum of 3 clearances per credentialer"
-        );
-        _credentialerClearances[_credentialer].push(typeHash);
+        bytes32 typeHash = keccak256(abi.encodePacked(_type));
+        if (msg_sender() != admin) {
+            bytes32 senderClearanceHash = keccak256(
+                abi.encodePacked(typeHash, msg_sender())
+            );
+            require(
+                _credentialerClearance.contains(senderClearanceHash) == true,
+                "Not cleared to modify current type"
+            );
+        }
+
         bytes32 clearanceHash = keccak256(
             abi.encodePacked(typeHash, _credentialer)
         );
-        _credentialerClearance.add(clearanceHash);
+
+        require(
+            _credentialerClearance.contains(clearanceHash) == true,
+            "Credentialer doesn't have this clearance"
+        );
+
+        _credentialerClearance.remove(clearanceHash);
+        int256 index = 0;
+        while (_credentialerClearances[_credentialer][index] != typeHash)
+            index += 1;
+        int256 len = _credentialerClearances[_credentialer].length;
+        _credentialerClearances[_credentialer][index] = _credentialerClearances[
+            _credentialer
+        ][len - 1];
+        delete _credentialerClearances[_credentialer][len - 1];
+        _credentialerClearances[_credentialer].length--;
     }
 
-    function isCredentialer(address addr) public view returns (bool) {
-        return _credentialers.contains(addr);
-    }
-
-    function getCredentialerCount() public view returns (uint256) {
-        return _credentialers.length();
-    }
+    //Credential types
 
     function createCredentialType(string memory _credentialType)
         public
@@ -254,9 +323,20 @@ contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
         _credentialTypes.remove(typeHash);
     }
 
-    function createCredential(string memory _credentialType, string memory _uri)
+    //Utility
+    function isCredentialer(address addr) public view returns (bool) {
+        return _credentialers.contains(addr);
+    }
+
+    function getCredentialerCount() public view returns (uint256) {
+        return _credentialers.length();
+    }
+
+    function createCredential(string memory _type, string memory _uri)
         public
-        onlyClearedCredentialer(_credentialType)
+        onlyHead
+        typeValidator(_type)
+        onlyCleared(_type)
         returns (uint256)
     {
         _tokenIds.increment();
