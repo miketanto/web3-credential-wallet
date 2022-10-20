@@ -43,6 +43,7 @@ import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 //1. Test New Admin Feature
 //2. Test New clearance Feature
 //3. Test New URI storage feature
+//4. Add Events
 
 contract SkillsWallet is ERC1155, ERC1155Burnable, ERC1155URIStorage, Ownable {
     using Counters for Counters.Counter;
