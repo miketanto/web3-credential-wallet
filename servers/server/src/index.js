@@ -15,7 +15,7 @@ import sequelize from './models'
 import routes from './routes'
 import { ApiError, logger } from './utils'
 
-const app = express()
+export const app = express()
 
 if (envVars.env !== 'test') {
   app.use(morgan.successHandler)
