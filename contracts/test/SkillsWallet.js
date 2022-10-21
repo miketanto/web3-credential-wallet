@@ -19,16 +19,21 @@ describe("SkillsWallet", function () {
     const [owner, otherAccount, account3] = await ethers.getSigners();
 
     const SkillsWallet = await ethers.getContractFactory("SkillsWallet");
-    const skillswallet = await SkillsWallet.deploy(baseURI,owner.address);
+    const SkillsClearance = await ethers.getContractFactory("SkillsClearance");
 
-    return {skillswallet, baseURI, owner, otherAccount, account3};
+    const skillsclearance  = await SkillsClearance.deploy(owner.address);
+    await skillsclearance.deployed()
+
+    const skillswallet = await SkillsWallet.deploy(baseURI,skillsclearance.address);
+    await skillswallet.deployed()
+    return {skillswallet,skillsclearance, baseURI, owner, otherAccount, account3};
   }
 
   describe("Deployment", function () {
     it("Should set the right admin", async function () {
-      const { skillswallet, owner } = await loadFixture(deploySkillsWalletFixture);
+      const { skillsclearance, owner } = await loadFixture(deploySkillsWalletFixture);
 
-      expect(await skillswallet.isCredentialer(owner.address)).to.equal(true);
+      expect(await skillsclearance.isCredentialer(owner.address)).to.equal(true);
     });
   });
 
@@ -38,139 +43,141 @@ describe("SkillsWallet", function () {
 
     describe("Add Head that is not a current credentialer", function () {
       it("Should add a head", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await skillswallet.createCredentialType(credentialType)
-        await skillswallet.addHead(otherAccount.address, credentialType)
-        expect(await skillswallet.isHead(otherAccount.address)).to.equal(true);
-        expect(await skillswallet.isCredentialer(otherAccount.address)).to.equal(true);
+        const { otherAccount, skillsclearance,owner } = await loadFixture(deploySkillsWalletFixture);
+        await skillsclearance.createCredentialType(credentialType)
+        await skillsclearance.addHead(otherAccount.address, credentialType)
+        expect(await skillsclearance.isHead(otherAccount.address)).to.equal(true);
+        expect(await skillsclearance.isCredentialer(otherAccount.address)).to.equal(true);
       });
 
       it("Should be reverted because not a available credential type", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await expect(skillswallet.addHead(otherAccount.address, credentialType)).to.be.revertedWith("Invalid credential type");
+        const { otherAccount, skillsclearance,owner } = await loadFixture(deploySkillsWalletFixture);
+        await expect(skillsclearance.addHead(otherAccount.address, credentialType)).to.be.revertedWith("Invalid credential type");
       });
 
       it("Should be reverted because not admin calling", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await expect(skillswallet.connect(otherAccount).addHead(otherAccount.address, credentialType)).to.be.revertedWith("Not the contract admin");
+        const { otherAccount, skillsclearance,owner } = await loadFixture(deploySkillsWalletFixture);
+        await expect(skillsclearance.connect(otherAccount).addHead(otherAccount.address, credentialType)).to.be.revertedWith("Not the contract admin");
       });
     });
 
     describe("Add Credentialer with Admin", function () {
       it("Should add a Credentialer", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await skillswallet.createCredentialType(credentialType)
-        await skillswallet.addCredentialer(otherAccount.address, credentialType)
-        expect(await skillswallet.isHead(otherAccount.address)).to.equal(false);
-        expect(await skillswallet.isCredentialer(otherAccount.address)).to.equal(true);
+        const { otherAccount, skillsclearance,owner } = await loadFixture(deploySkillsWalletFixture);
+        await skillsclearance.createCredentialType(credentialType)
+        await skillsclearance.addCredentialer(otherAccount.address, credentialType)
+        expect(await skillsclearance.isHead(otherAccount.address)).to.equal(false);
+        expect(await skillsclearance.isCredentialer(otherAccount.address)).to.equal(true);
       });
 
       it("Should be reverted because not a available credential type", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await expect(skillswallet.addCredentialer(otherAccount.address, credentialType)).to.be.revertedWith("Invalid credential type");
+        const { otherAccount, skillsclearance,owner } = await loadFixture(deploySkillsWalletFixture);
+        await expect(skillsclearance.addCredentialer(otherAccount.address, credentialType)).to.be.revertedWith("Invalid credential type");
       });
 
       it("Should be reverted because not admin calling", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await expect(skillswallet.connect(otherAccount).addCredentialer(otherAccount.address, credentialType)).to.be.revertedWith("Not an approved head");
+        const { otherAccount, skillsclearance,owner } = await loadFixture(deploySkillsWalletFixture);
+        await expect(skillsclearance.connect(otherAccount).addCredentialer(otherAccount.address, credentialType)).to.be.revertedWith("Not an approved head");
       });
     });
 
     describe("Add Head that is Credentialer with same clearance", function () {
       it("Should add a Head after it is a credentialer", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await skillswallet.createCredentialType(credentialType)
-        await skillswallet.addCredentialer(otherAccount.address, credentialType)
-        expect(await skillswallet.isHead(otherAccount.address)).to.equal(false);
-        expect(await skillswallet.isCredentialer(otherAccount.address)).to.equal(true);
-        expect(await skillswallet.hasClearance(otherAccount.address,credentialType)).to.equal(true);
+        const { otherAccount, skillsclearance,owner } = await loadFixture(deploySkillsWalletFixture);
+        await skillsclearance.createCredentialType(credentialType)
+        await skillsclearance.addCredentialer(otherAccount.address, credentialType)
+        expect(await skillsclearance.isHead(otherAccount.address)).to.equal(false);
+        expect(await skillsclearance.isCredentialer(otherAccount.address)).to.equal(true);
+        expect(await skillsclearance.hasClearance(otherAccount.address,credentialType)).to.equal(true);
 
-        await skillswallet.addHead(otherAccount.address, credentialType)
-        expect(await skillswallet.isHead(otherAccount.address)).to.equal(true);
+        await skillsclearance.addHead(otherAccount.address, credentialType)
+        expect(await skillsclearance.isHead(otherAccount.address)).to.equal(true);
       });
     });
 
     describe("Add Head that is Credentialer with different clearance", function () {
       it("Should add a Head after it is a credentialer with a different clearance", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await skillswallet.createCredentialType(credentialType)
-        await skillswallet.createCredentialType(credentialType2)
-        await skillswallet.addCredentialer(otherAccount.address, credentialType)
-        expect(await skillswallet.isHead(otherAccount.address)).to.equal(false);
-        expect(await skillswallet.isCredentialer(otherAccount.address)).to.equal(true);
-        expect(await skillswallet.hasClearance(otherAccount.address,credentialType)).to.equal(true);
+        const { otherAccount, skillsclearance,owner } = await loadFixture(deploySkillsWalletFixture);
+        await skillsclearance.createCredentialType(credentialType)
+        await skillsclearance.createCredentialType(credentialType2)
+        await skillsclearance.addCredentialer(otherAccount.address, credentialType)
+        expect(await skillsclearance.isHead(otherAccount.address)).to.equal(false);
+        expect(await skillsclearance.isCredentialer(otherAccount.address)).to.equal(true);
+        expect(await skillsclearance.hasClearance(otherAccount.address,credentialType)).to.equal(true);
 
-        await skillswallet.addHead(otherAccount.address, credentialType2)
-        expect(await skillswallet.isHead(otherAccount.address)).to.equal(true);
-        expect(await skillswallet.hasClearance(otherAccount.address,credentialType2)).to.equal(true);
+        await skillsclearance.addHead(otherAccount.address, credentialType2)
+        expect(await skillsclearance.isHead(otherAccount.address)).to.equal(true);
+        expect(await skillsclearance.hasClearance(otherAccount.address,credentialType2)).to.equal(true);
       });
     });
 
     describe("Add Credentialer with Head", function () {
       it("Should add a Credentialer", async function () {
-        const { otherAccount, skillswallet,account3} = await loadFixture(deploySkillsWalletFixture);
-        await skillswallet.createCredentialType(credentialType)
-        await skillswallet.addHead(otherAccount.address, credentialType)
-        expect(await skillswallet.isHead(otherAccount.address)).to.equal(true);
-        expect(await skillswallet.isCredentialer(otherAccount.address)).to.equal(true);
-        await skillswallet.connect(otherAccount).addCredentialer(account3.address, credentialType)
-        expect(await skillswallet.isHead(account3.address)).to.equal(false);
-        expect(await skillswallet.isCredentialer(account3.address)).to.equal(true);
+        const { otherAccount, skillsclearance,account3} = await loadFixture(deploySkillsWalletFixture);
+        await skillsclearance.createCredentialType(credentialType)
+        await skillsclearance.addHead(otherAccount.address, credentialType)
+        expect(await skillsclearance.isHead(otherAccount.address)).to.equal(true);
+        expect(await skillsclearance.isCredentialer(otherAccount.address)).to.equal(true);
+        await skillsclearance.connect(otherAccount).addCredentialer(account3.address, credentialType)
+        expect(await skillsclearance.isHead(account3.address)).to.equal(false);
+        expect(await skillsclearance.isCredentialer(account3.address)).to.equal(true);
       });
 
       it("Should be reverted because head doesn't have type clearance", async function () {
-        const { otherAccount, skillswallet,account3} = await loadFixture(deploySkillsWalletFixture);
-        await skillswallet.createCredentialType(credentialType)
-        await skillswallet.createCredentialType(credentialType2)
-        await skillswallet.addHead(otherAccount.address, credentialType)
-        expect(await skillswallet.isHead(otherAccount.address)).to.equal(true);
-        expect(await skillswallet.isCredentialer(otherAccount.address)).to.equal(true);
-        await expect(skillswallet.connect(otherAccount).addCredentialer(account3.address, credentialType2)).to.be.revertedWith("Not cleared to modify current type")
-        expect(await skillswallet.isCredentialer(account3.address)).to.equal(false);
+        const { otherAccount, skillsclearance,account3} = await loadFixture(deploySkillsWalletFixture);
+        await skillsclearance.createCredentialType(credentialType)
+        await skillsclearance.createCredentialType(credentialType2)
+        await skillsclearance.addHead(otherAccount.address, credentialType)
+        expect(await skillsclearance.isHead(otherAccount.address)).to.equal(true);
+        expect(await skillsclearance.isCredentialer(otherAccount.address)).to.equal(true);
+        await expect(skillsclearance.connect(otherAccount).addCredentialer(account3.address, credentialType2)).to.be.revertedWith("Not cleared to modify current type")
+        expect(await skillsclearance.isCredentialer(account3.address)).to.equal(false);
       });
 
       it("Should be reverted because not head calling", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await expect(skillswallet.connect(otherAccount).addCredentialer(otherAccount.address, credentialType)).to.be.revertedWith("Not an approved head");
+        const { otherAccount, skillsclearance,owner } = await loadFixture(deploySkillsWalletFixture);
+        await expect(skillsclearance.connect(otherAccount).addCredentialer(otherAccount.address, credentialType)).to.be.revertedWith("Not an approved head");
       });
     });
     
     describe("Create Credential", function () {
       it("Should create a credential", async function () {
-        const { otherAccount, skillswallet,account3} = await loadFixture(deploySkillsWalletFixture);
-        await skillswallet.createCredentialType(credentialType)
-        await skillswallet.addHead(otherAccount.address, credentialType)
+        const { otherAccount, skillswallet,skillsclearance,account3} = await loadFixture(deploySkillsWalletFixture);
+        await skillsclearance.createCredentialType(credentialType)
+        await skillsclearance.addHead(otherAccount.address, credentialType)
         const uri = "firstCredential"
         const returnval = await skillswallet.connect(otherAccount).createCredential(credentialType,uri)
         expect(await skillswallet.uri(1)).to.equal("https://www.baseURI.com/firstCredential");
       });
 
       it("Should be reverted because head doesn't have type clearance", async function () {
-        const { otherAccount, skillswallet,account3} = await loadFixture(deploySkillsWalletFixture);
-        await skillswallet.createCredentialType(credentialType)
-        await skillswallet.createCredentialType(credentialType2)
-        await skillswallet.addHead(otherAccount.address, credentialType)
+        const { otherAccount, skillswallet,skillsclearance, account3} = await loadFixture(deploySkillsWalletFixture);
+        await skillsclearance.createCredentialType(credentialType)
+        await skillsclearance.createCredentialType(credentialType2)
+        await skillsclearance.addHead(otherAccount.address, credentialType)
         const uri = "firstCredential"
         await expect(skillswallet.connect(otherAccount).createCredential(credentialType2,uri)).to.be.revertedWith("Don't have clearance for this credential type")
       });
 
       it("Should be reverted because not head calling", async function () {
-        const { otherAccount, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
-        await expect(skillswallet.connect(otherAccount).addCredentialer(otherAccount.address, credentialType)).to.be.revertedWith("Not an approved head");
+        const { otherAccount,skillsclearance, skillswallet,owner } = await loadFixture(deploySkillsWalletFixture);
+        await skillsclearance.createCredentialType(credentialType)
+        const uri = "firstCredential"
+        await expect(skillswallet.connect(otherAccount).createCredential(credentialType,uri)).to.be.revertedWith("Not an approved head");
       });
     });
 
     async function createdCredentialFixture() {
-      const { otherAccount, skillswallet,owner, account3, baseURI} = await loadFixture(deploySkillsWalletFixture);
+      const { otherAccount, skillswallet,skillsclearance,owner, account3, baseURI} = await loadFixture(deploySkillsWalletFixture);
       const account4 = (await ethers.getSigners())[3]
-      await skillswallet.createCredentialType(credentialType)
-      await skillswallet.createCredentialType(credentialType2)
-      await skillswallet.addHead(otherAccount.address, credentialType)
-      await skillswallet.connect(otherAccount).addCredentialer(account3.address, credentialType)
-      await skillswallet.connect(owner).addCredentialer(account4.address,credentialType2)
+      await skillsclearance.createCredentialType(credentialType)
+      await skillsclearance.createCredentialType(credentialType2)
+      await skillsclearance.addHead(otherAccount.address, credentialType)
+      await skillsclearance.connect(otherAccount).addCredentialer(account3.address, credentialType)
+      await skillsclearance.connect(owner).addCredentialer(account4.address,credentialType2)
       const uri = "firstCredential"
       await skillswallet.connect(otherAccount).createCredential(credentialType,uri)
-      return {skillswallet, baseURI, owner, otherAccount, credentialType, account3, account4};
+      return {skillswallet,skillsclearance, baseURI, owner, otherAccount, credentialType, account3, account4};
     }
 
     describe("Mint Credential", function () {
