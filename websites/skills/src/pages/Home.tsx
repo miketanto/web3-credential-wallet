@@ -50,7 +50,12 @@ export default function Home() {
                 <div className="text-xl font-bold">Education</div>
               </PinBoardHeader>
               <PinBoardBody>
-                <Education />
+                <Education
+                  imageSource={Illinois}
+                  schoolName="University of Illinois Urbana Champaign"
+                  degree="Bachelors in Computer Science"
+                  graduationYear=" 2025"
+                />
               </PinBoardBody>
             </PinBoard>
             <PinBoard>
@@ -58,7 +63,11 @@ export default function Home() {
                 <div className="text-xl font-bold">Experience</div>
               </PinBoardHeader>
               <PinBoardBody>
-                <ExperienceBlock />
+                <ExperienceBlock
+                  imageSource={GiesLogo}
+                  expName="Disruption Lab"
+                  role="Technical Lead"
+                />
               </PinBoardBody>
             </PinBoard>
             <PinBoard>
