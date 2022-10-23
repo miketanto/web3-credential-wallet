@@ -9,6 +9,7 @@ import { skillValidation } from '../../validations'
 const router = express.Router()
 
 // List all available skills
+// Should be OK
 router.get(
   '/list',
   catchAsync(async (req, res, next) => {
