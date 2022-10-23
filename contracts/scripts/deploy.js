@@ -21,6 +21,7 @@ async function main() {
     const ERC1155Market = await ethers.getContractFactory("ERC1155Market")
     const NFT = await ethers.getContractFactory("NFT")
     const ERC1155NFT = await ethers.getContractFactory("ERC1155NFT")
+    const SkillsClearance = await ethers.getContractFactory("SkillsClearance")
 
     const [owner] = await ethers.getSigners();
 
@@ -45,8 +46,9 @@ async function main() {
 
   const baseURI = "https://www.baseURI.com/"
   
-  
-  const skillswallet = await SkillsWallet.deploy(baseURI,owner.address);
+  const skillsclearance = await SkillsClearance.deploy(owner.address);
+  await skillsclearance.deployed()
+  const skillswallet = await SkillsWallet.deploy(baseURI,skillsclearance.address);
   console.log(owner.address)
 
   const _addressBook = {
@@ -58,6 +60,7 @@ async function main() {
     "ERC1155Market" : erc1155market.address,
     "ERC1155NFT": erc1155nft.address,
     "SkillsWallet" : skillswallet.address,
+    "SkillsClearance":skillsclearance.address,
   };
   const addressBook = JSON.stringify(_addressBook);
   fs.writeFile( __dirname + '/../contractAddress.json', addressBook, function(err, result) {

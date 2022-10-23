@@ -8,3 +8,4 @@ export const adminaddress = addressBook.Admin
 export const erc1155nftaddress = addressBook.ERC1155NFT
 export const erc1155nftmarketaddress = addressBook.ERC1155Market
 export const skillswalletaddress = addressBook.SkillsWallet
+export const skillsclearanceaddress = addressBook.SkillsClearance

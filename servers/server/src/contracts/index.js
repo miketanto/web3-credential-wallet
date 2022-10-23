@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 
 import {
   mcoaddress, gcoaddress, nftaddress, nftmarketaddress,
-  erc1155nftmarketaddress, erc1155nftaddress,skillswalletaddress
+  erc1155nftmarketaddress, erc1155nftaddress, skillswalletaddress, skillsclearanceaddress,
 } from './config'
 import { envVars } from '../config'
 import mco from './contracts/MerchCoin.json'
@@ -12,6 +12,7 @@ import nftmarket from './contracts/NFTMarket.json'
 import erc1155nft from './contracts/ERC1155NFT.json'
 import erc1155market from './contracts/ERC1155Market.json'
 import skillswallet from './contracts/SkillsWallet.json'
+import skillsclearance from './contracts/SkillsClearance.json'
 import { getVanillaContract } from '../utils/contract'
 
 /* eslint-disable global-require */
@@ -23,3 +24,4 @@ export const NFTMarket = getVanillaContract(nftmarketaddress, nftmarket.abi, Web
 export const ERC1155Market = getVanillaContract(erc1155nftmarketaddress, erc1155market.abi, Web3Provider)
 export const ERC1155NFT = getVanillaContract(erc1155nftaddress, erc1155nft.abi, Web3Provider)
 export const SkillsWallet = getVanillaContract(skillswalletaddress, skillswallet.abi, Web3Provider)
+export const SkillsClearance = getVanillaContract(skillsclearanceaddress, skillsclearance.abi, Web3Provider)
