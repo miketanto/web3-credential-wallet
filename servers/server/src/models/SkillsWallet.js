@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-
+import { Users, Wallets } from './users'
 import sequelize from './sequelize'
 
 /**
@@ -10,29 +10,10 @@ import sequelize from './sequelize'
  * - A `userId` attribute in the Task model, pointing to a column named `user_id` in the task table
  */
 
-export const Users = sequelize.define('Users', {
-  email: { type: Sequelize.TEXT, allowNull: false, primaryKey: true },
-  oid: { type: Sequelize.UUID, allowNull: false },
-  net_id: { type: Sequelize.TEXT, allowNull: false },
-  first_name: { type: Sequelize.TEXT, allowNull: false },
-  last_name: { type: Sequelize.TEXT, allowNull: false },
-}, {
-  timestamps: true,
-  underscored: true,
-})
-
-export const Wallets = sequelize.define('Wallets', {
-  email: { type: Sequelize.TEXT, allowNull: false },
-  main_address: { type: Sequelize.TEXT, allowNull: false, primaryKey: true },
-  seed_phrase: { type: Sequelize.TEXT, allowNull: false, uniqueKey: true },
-}, {
-  timestamps: true,
-  underscored: true,
-})
-
 export const Skills = sequelize.define('Skills', {
-  token_id: { type: Sequelize.TEXT, allowNull: true },
+  token_id: { type: Sequelize.INTEGER,autoIncrement: true, primaryKey: true},
   name: { type: Sequelize.TEXT, allowNull: false },
+  type: {type: Sequelize.TEXT, allowNull:false},
   description: { type: Sequelize.TEXT, allowNull: false },
   submitter: { type: Sequelize.TEXT, allowNull: false },
   tx_hash: { type: Sequelize.CITEXT, allowNull: false },
@@ -42,4 +23,37 @@ export const Skills = sequelize.define('Skills', {
   underscored: true,
 })
 
+export const Experiences = sequelize.define('Experience', {
+  id: {type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true},
+  title: { type: Sequelize.TEXT, allowNull: false },
+  role: { type: Sequelize.TEXT, allowNull: false },
+  description:  { type: Sequelize.TEXT, allowNull: false }
+}, {
+  timestamps: true,
+  underscored: true,
+})
+
+export const Projects = sequelize.define('Projects', {
+  id: {type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true},
+  title: { type: Sequelize.TEXT, allowNull: false },
+  type: { type: Sequelize.TEXT, allowNull: false },
+  description:  { type: Sequelize.TEXT, allowNull: false }
+}, {
+  timestamps: true,
+  underscored: true,
+})
 // TODO: Define foreign key relations
+Skills.belongsToMany(Users, {
+  through: "user_skills",
+  as: "users",
+  foreignKey: "skill_id",
+});
+
+Users.belongsToMany(Skills, {
+  through: "user_skills",
+  as: "skills",
+  foreignKey: "user_id",
+});
+
+Users.hasMany(Experiences)
+Users.hasMany(Projects)

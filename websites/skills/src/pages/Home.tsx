@@ -5,6 +5,11 @@ import Container from '../components/Container'
 import PinBoard from '../components/PinBoard'
 import PinBoardBody from '../components/PinBoard/Body'
 import PinBoardHeader from '../components/PinBoard/Header'
+import Illinois from '../assets/uiucProfile.jpg'
+import GiesLogo from '../assets/giesUIUC.png'
+import Education from '../components/Profile/Education'
+import ExperienceBlock from '../components/Profile/experience'
+import UserSkillBlock from '../components/Profile/UserSkills'
 
 export default function Home() {
   return (
@@ -30,8 +35,39 @@ export default function Home() {
               </PinBoardHeader>
               <PinBoardBody>
                 <div className="max-w-xl text-stone-500 text-sm">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                  Jongwon is a CS sophomore highly motivated in the blockchain
+                  ecosystem. He has spent the last two years developing on-chain
+                  dApps in Solidity and Rust. With his extensive JS/React
+                  background of almost a decade, he is also comfortable writing
+                  Web3 applications. He is mainly interested in the DeFi
+                  ecosystem, both writing smart contracts and developing apps
+                  that interact with on-chain components.
                 </div>
+              </PinBoardBody>
+            </PinBoard>
+            <PinBoard>
+              <PinBoardHeader>
+                <div className="text-xl font-bold">Education</div>
+              </PinBoardHeader>
+              <PinBoardBody>
+                <Education
+                  imageSource={Illinois}
+                  schoolName="University of Illinois Urbana Champaign"
+                  degree="Bachelors in Computer Science"
+                  graduationYear=" 2025"
+                />
+              </PinBoardBody>
+            </PinBoard>
+            <PinBoard>
+              <PinBoardHeader>
+                <div className="text-xl font-bold">Experience</div>
+              </PinBoardHeader>
+              <PinBoardBody>
+                <ExperienceBlock
+                  imageSource={GiesLogo}
+                  expName="Disruption Lab"
+                  role="Technical Lead"
+                />
               </PinBoardBody>
             </PinBoard>
             <PinBoard>
@@ -40,39 +76,25 @@ export default function Home() {
               </PinBoardHeader>
               <PinBoardBody>
                 <div className="grid grid-cols-3 gap-x-4 w-full">
-                  <div className="py-3 px-4 border border-stone-200 rounded-lg hover:shadow-lg transition">
-                    <div className="flex flex-row items-center space-x-2">
-                      <span className="font-bold">Skill 1</span>
-                      <div className="badge badge-sm badge-success">&#10003;</div>
-                    </div>
-                    <div className="flex flex-row items-center space-x-2 pt-1">
-                      <div className="badge badge-sm badge-primary">Technology</div>
-                      <div className="badge badge-sm badge-info">Advanced</div>
-                    </div>
-                    <div className="pt-2 text-sm">Some content of the skill 1</div>
-                  </div>
-                  <div className="py-3 px-4 border border-stone-200 rounded-lg hover:shadow-lg transition">
-                    <div className="flex flex-row items-center space-x-2">
-                      <span className="font-bold">Skill 1</span>
-                      <div className="badge badge-sm badge-success">&#10003;</div>
-                    </div>
-                    <div className="flex flex-row items-center space-x-2 pt-1">
-                      <div className="badge badge-sm badge-primary">Technology</div>
-                      <div className="badge badge-sm badge-info">Advanced</div>
-                    </div>
-                    <div className="pt-2 text-sm">Some content of the skill 1. The description may be longer than other skills.</div>
-                  </div>
-                  <div className="py-3 px-4 border border-stone-200 rounded-lg hover:shadow-lg transition">
-                    <div className="flex flex-row items-center space-x-2">
-                      <span className="font-bold">Skill 1</span>
-                      <div className="badge badge-sm badge-success">&#10003;</div>
-                    </div>
-                    <div className="flex flex-row items-center space-x-2 pt-1">
-                      <div className="badge badge-sm badge-primary">Technology</div>
-                      <div className="badge badge-sm badge-info">Advanced</div>
-                    </div>
-                    <div className="pt-2 text-sm">Some content of the skill 1</div>
-                  </div>
+                  <UserSkillBlock
+                    skillName="Python"
+                    badgePrimary="Technology"
+                    badgeInfo="Advanced"
+                    description="Experience with Python Programming"
+                  />
+                  <UserSkillBlock
+                    skillName="Cooking"
+                    badgePrimary="Home Skills"
+                    badgeInfo="Advanced"
+                    description="Experience with Italian Cuisine"
+                  />
+                  <UserSkillBlock
+                    skillName="Teamwork"
+                    badgePrimary="Communication"
+                    badgeInfo="Advanced"
+                    description="History of working with others"
+                  />
+
                 </div>
               </PinBoardBody>
             </PinBoard>
