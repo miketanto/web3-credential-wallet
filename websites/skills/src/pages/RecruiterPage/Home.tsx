@@ -215,12 +215,12 @@ export default function RecruiterPageHome() {
   }
   return (
     <div className="h-screen">
-      <div className="flex mt-10 justify-around py-10 h-3/4">
-        <div className="flex flex-col w-1/3 mb-10 ">
-          <div className="py-3 pl-2 text-xl border-2 border-black bg-orange-200">
+      <div className="flex justify-center mt-10 py-10 h-screen gap-20">
+        <div className="flex flex-col mb-10 w-1/3 ">
+          <div className="py-3 pl-2 text-xl text-white font-semibold border-2 border-black bg-blue-900">
             <h1>Showing results for...</h1>
           </div>
-          <div className="border-2 border-black bg-orange-100">
+          <div className="border-2 border-black mt-3 bg-blue-100">
             <h3 className="py-3 pl-3 text-lg">Skills</h3>
             <Select
               isMulti
@@ -231,7 +231,7 @@ export default function RecruiterPageHome() {
               onChange={skillChangeHandler}
             />
           </div>
-          <div className="border-2 border-black bg-orange-100">
+          <div className="border-2 border-black mt-3 bg-blue-100">
             <h3 className="py-3 pl-3 text-lg">Graduation Year</h3>
             <Select
               isMulti
@@ -242,7 +242,7 @@ export default function RecruiterPageHome() {
               onChange={yearChangeHandler}
             />
           </div>
-          <div className="border-2 border-black bg-orange-100">
+          <div className="border-2 border-black mt-3 bg-blue-100">
             <h3 className="py-3 pl-3 text-lg">Major</h3>
             <Select
               isMulti
@@ -254,7 +254,7 @@ export default function RecruiterPageHome() {
             />
           </div>
         </div>
-        <div className="overflow-y-auto w-1/2 h-full">
+        <div className="overflow-y-auto float-left position-relative w-1/3 h-3/4 ml-1/6 mr-1/6 ">
           {students}
         </div>
       </div>
