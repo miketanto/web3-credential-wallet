@@ -10,6 +10,7 @@ import { ApiError } from '../utils'
  */
 export default function getWalletFromEmail() {
   return async (req, res, next) => {
+    req = req.query
     if (!req.user || !req.user.email) {
       return next(new ApiError(httpStatus.BAD_REQUEST, 'Could not retrieve email from JWT'))
     }

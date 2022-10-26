@@ -7,20 +7,15 @@ import { testapp as app } from '../src/index'
 chai.use(chaiHttp)
 chai.should()
 
-describe('User', () => {
-  describe('GET /user/address', () => {
-    it('Should get create a user and return its addresses', (done) => {
+describe('Skills', () => {
+  describe('GET /skill/list', () => {
+    it('Should list all available skills', (done) => {
       chai.request(app)
-        .get('/user/address')
-        .query({
-          user: {
-            email: 'sutanto4@illinois.edu', first_name: 'Michael', last_name: 'Sutanto', wallet: 'aaa',
-          },
-        })
+        .get('/skill/list')
         .end((err, res) => {
           // res.should.have.status(200)
           console.log(res.body.payload)
-          // res.body.payload.should.be.a('object')
+          res.body.payload.should.be.a('object')
           done()
         })
     })

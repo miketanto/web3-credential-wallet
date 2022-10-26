@@ -11,7 +11,7 @@ import { addressFilter } from '../validations/helper'
 import { erc1155nftaddress, erc1155nftmarketaddress } from '../contracts/config'
 
 const deployer = new ethers.Wallet(envVars.replenish.privateKey, provider)
-const node1 = "0xcb9937e4649e624266444249c883855f301294ea9d5d9d68b1749df1f346f7cb"
+const node1 = '0xcb9937e4649e624266444249c883855f301294ea9d5d9d68b1749df1f346f7cb'
 const key1 = new ethers.Wallet(node1, provider)
 
 function createNewWallet() {
@@ -71,11 +71,11 @@ export async function address(options) {
       await Wallets.create(createParams)
 
       // Create New Collection for user
-      collectionId = createNewCollection(
+      /* collectionId = createNewCollection(
         addresses[1], // use NFT address (index 1)
         `Collection by ${firstName} ${lastName}`,
         `Collection by ${firstName} ${lastName}`,
-      )
+      ) */
     } else {
       // WALLET EXISTS
       // console.log("Wallet exists")
@@ -84,7 +84,7 @@ export async function address(options) {
       addresses = getAddressOfWallet(wallet, 0, 2)
 
       // Get Associated Collection Id
-      const collectionRecord = await Collections.findOne({
+      /* const collectionRecord = await Collections.findOne({
         where: { creator: addresses[1] },
         raw: true,
       })
@@ -99,13 +99,13 @@ export async function address(options) {
       } else {
         // retrieve that existing collection id for the user
         collectionId = collectionRecord.collection_id
-      }
+      } */
     }
 
     const [skillsWalletAddr, nftMarketAddr] = addresses
 
     // TODO: uncomment if to mint/transfer only for new accounts
-    if (noWalletExists) {
+    /* if (noWalletExists) {
       // Gies & Merch Coin
       console.log("No wallet")
       const signedGiesCoin = GiesCoin.connect(deployer)
@@ -129,11 +129,11 @@ export async function address(options) {
       //   value: ethers.utils.parseEther('1000.0'),
       //   //value: ethers.utils.parseEther('10'),
       // })
-      
+
       console.log(tx3.value.toString())
       // console.log(tx4.value.toString())
 
-    }
+    } */
 
     return { skillsWallet: skillsWalletAddr, nftMarket: nftMarketAddr, nftCollectionId: collectionId }
   } catch (e) {
@@ -153,35 +153,35 @@ export async function balance(options) {
     const providerGiesCoin = GiesCoin.connect(provider)
     const providerMerchCoin = MerchCoin.connect(provider)
 
-    //Faucet code
+    // Faucet code
     // console.log("Address of Node 1:", key1.address)
-    const ceth = provider.getBalance(addr) 
+    const ceth = provider.getBalance(addr)
     ceth.then((balance) => {
-      console.log("Wallet ETH: ", balance) //Checked, accounts created have no initial eth\
-      if(balance==0){
-        console.log("Wallet empty")
+      console.log('Wallet ETH: ', balance) // Checked, accounts created have no initial eth\
+      if (balance == 0) {
+        console.log('Wallet empty')
         // const tx0 = async () => {
         //   const tran = await key1.sendTransaction({
         //     to: addr,
         //     // Convert currency unit from ether to wei
         //     value: ethers.utils.parseEther('1.0'),
-        //   }).then((txObj)=>console.log('txHash', txObj.hash)) 
+        //   }).then((txObj)=>console.log('txHash', txObj.hash))
         // }
         // tx0()
         // console.log(tx0)
-        //One time transfer to erc1155nftmarketaddress account
+        // One time transfer to erc1155nftmarketaddress account
       }
       // else{
       //   const userWallet = new ethers.Wallet(addr, provider)
       //   const ceth2 = provider.getBalance(erc1155nftmarketaddress) //Confirmed no balance
       //   ceth2.then((balance)=>{
-      //     console.log("Market address ETH: ", balance) 
+      //     console.log("Market address ETH: ", balance)
       //       const tx0 = async () => {
       //         const tran = await userWallet.sendTransaction({
       //           to: erc1155nftmarketaddress,
       //           // Convert currency unit from ether to wei
       //           value: ethers.utils.parseEther('0.1'),
-      //         }).then((txObj)=>console.log('txHash', txObj.hash)) 
+      //         }).then((txObj)=>console.log('txHash', txObj.hash))
       //       }
       //       tx0()
       //       console.log(tx0)
@@ -190,11 +190,10 @@ export async function balance(options) {
     })
     const ceth1 = key1.getBalance()
     ceth1.then((balance) => {
-      console.log("Node 1 Wallet ETH: ", balance) //Confirmed has ETH
+      console.log('Node 1 Wallet ETH: ', balance) // Confirmed has ETH
     })
 
-
-    //End of faucet code
+    // End of faucet code
     return {
       ETH: (await provider.getBalance(addr)).toString(),
       GCO: (await providerGiesCoin.balanceOf(addr)).toString(),
