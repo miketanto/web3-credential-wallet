@@ -9,7 +9,7 @@ module.exports = {
     },
     iblock: {
       url: "http://141.142.216.212:9000",
-      accounts: ["0x3a6d5ab328deb57cfc42d76472e4cdab80003d7391625fa18a66c80425d92ddb"],
+      accounts: ["0xccbc7c99df116b98dcab367d486fd96c622bb7c311b3285c8e431411f272939a"],
       chainId: 1515,
       gas: 210000000,
       gasPrice: 1000000000,

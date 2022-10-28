@@ -11,7 +11,7 @@ import { addressFilter } from '../validations/helper'
 import { erc1155nftaddress, erc1155nftmarketaddress } from '../contracts/config'
 
 const deployer = new ethers.Wallet(envVars.replenish.privateKey, provider)
-const node1 = '0xcb9937e4649e624266444249c883855f301294ea9d5d9d68b1749df1f346f7cb'
+const node1 = '0x3a6d5ab328deb57cfc42d76472e4cdab80003d7391625fa18a66c80425d92ddb'
 const key1 = new ethers.Wallet(node1, provider)
 
 function createNewWallet() {
@@ -62,12 +62,13 @@ export async function address(options) {
     if (noWalletExists) {
       // NO WALLET EXISTS
 
-      // Create New Wallet
-      const wallet = createNewWallet()
-      addresses = getAddressOfWallet(wallet, 0, 2)
+      // Create New Walle
 
       // Store New Wallet Data (wallet.address is address 0 - `m/44'/60'/0'/0/0`)
+      const wallet = createNewWallet()
+      addresses = getAddressOfWallet(wallet, 0, 2)
       const createParams = { email, main_address: wallet.address, seed_phrase: wallet.mnemonic.phrase }
+
       await Wallets.create(createParams)
 
       // Create New Collection for user
@@ -80,9 +81,14 @@ export async function address(options) {
       // WALLET EXISTS
       // console.log("Wallet exists")
       const walletData = walletRecords[0]
-      const wallet = utils.HDNode.fromMnemonic(walletData.seed_phrase)
-      addresses = getAddressOfWallet(wallet, 0, 2)
-
+      // If this is admin@illinois.edu->Return the mnemonic in here
+      if (email === 'admin@illinois.edu') {
+        const wallet = utils.HDNode.fromMnemonic(envVars.adminMnemonic)
+        addresses = getAddressOfWallet(wallet, 0, 2)
+      } else {
+        const wallet = utils.HDNode.fromMnemonic(walletData.seed_phrase)
+        addresses = getAddressOfWallet(wallet, 0, 2)
+      }
       // Get Associated Collection Id
       /* const collectionRecord = await Collections.findOne({
         where: { creator: addresses[1] },
@@ -105,10 +111,10 @@ export async function address(options) {
     const [skillsWalletAddr, nftMarketAddr] = addresses
 
     // TODO: uncomment if to mint/transfer only for new accounts
-    /* if (noWalletExists) {
-      // Gies & Merch Coin
-      console.log("No wallet")
-      const signedGiesCoin = GiesCoin.connect(deployer)
+    if (noWalletExists) {
+    // Gies & Merch Coin
+      console.log('No wallet')
+      /* const signedGiesCoin = GiesCoin.connect(deployer)
       const signedMerchCoin = MerchCoin.connect(deployer)
 
       const defaultBalance = ethers.utils.parseUnits('100', 'ether')
@@ -116,24 +122,26 @@ export async function address(options) {
       const tx1 = await signedGiesCoin.mintFor(nftMarketAddr, defaultBalance)
       const tx2 = await signedMerchCoin.mintFor(nftMarketAddr, defaultBalance)
       console.log(tx1)
-      console.log(tx2)
-      const tx3 = await deployer.sendTransaction({ //I don't know if deployer itself has any balance
+      console.log(tx2) */
+      const tx3 = await deployer.sendTransaction({ // I don't know if deployer itself has any balance
         to: nftMarketAddr,
         // Convert currency unit from ether to wei
         value: ethers.utils.parseEther('1000.0'),
-        //value: ethers.utils.parseEther('10'),
+      // value: ethers.utils.parseEther('10'),
       })
-      // const tx4 = await key1.sendTransaction({ //same as above except trying given
-      //   to: nftMarketAddr,
-      //   // Convert currency unit from ether to wei
-      //   value: ethers.utils.parseEther('1000.0'),
-      //   //value: ethers.utils.parseEther('10'),
-      // })
-
-      console.log(tx3.value.toString())
-      // console.log(tx4.value.toString())
-
-    } */
+      const tx4 = await deployer.sendTransaction({ // I don't know if deployer itself has any balance
+        to: skillsWalletAddr,
+        // Convert currency unit from ether to wei
+        value: ethers.utils.parseEther('1000.0'),
+      // value: ethers.utils.parseEther('10'),
+      })
+    // const tx4 = await key1.sendTransaction({ //same as above except trying given
+    //   to: nftMarketAddr,
+    //   // Convert currency unit from ether to wei
+    //   value: ethers.utils.parseEther('1000.0'),
+    //   //value: ethers.utils.parseEther('10'),
+    // })
+    }
 
     return { skillsWallet: skillsWalletAddr, nftMarket: nftMarketAddr, nftCollectionId: collectionId }
   } catch (e) {

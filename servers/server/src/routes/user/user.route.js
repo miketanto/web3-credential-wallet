@@ -18,6 +18,7 @@ router.get(
   '/address',
   // passport.authenticate('bearer', { session: false }),
   catchAsync(async (req, res, next) => {
+    req.query.user  = JSON.parse(req.query.user)
     const { user } = req.query // populated by Passport.js
     const addresses = await userService.address({ user })
     res.locals = { addresses } // TODO: Remove redundancy by doing `res.locals = addresses` instead

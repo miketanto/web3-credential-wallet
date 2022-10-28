@@ -9,6 +9,7 @@ import { getSignerFromWallet, ApiError } from '../utils'
  */
 export default function getWalletSigner(target) {
   return async (req, res, next) => {
+    req = req.query
     if (!req.user || !req.user.wallet) {
       return next(new ApiError(httpStatus.BAD_REQUEST, 'Could not retrieve email from JWT'))
     }

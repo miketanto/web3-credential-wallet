@@ -3,6 +3,7 @@ import httpStatus from 'http-status'
 import { ethers, utils } from 'ethers'
 import { Wallets } from '../models'
 import { ApiError } from '../utils'
+import { envVars } from '../config'
 
 /**
  * Gets wallet from given email (acquired from Microsoft AAD JWT parsed through passport.js `bearer`)
@@ -11,6 +12,7 @@ import { ApiError } from '../utils'
 export default function getWalletFromEmail() {
   return async (req, res, next) => {
     req = req.query
+    req.user = JSON.parse(req.user)
     if (!req.user || !req.user.email) {
       return next(new ApiError(httpStatus.BAD_REQUEST, 'Could not retrieve email from JWT'))
     }
@@ -36,7 +38,13 @@ export default function getWalletFromEmail() {
     } else {
       // wallet exists, grab the wallet data & append that wallet to `req.user`
       const walletData = walletRecords[0]
-      const wallet = utils.HDNode.fromMnemonic(walletData.seed_phrase)
+      let wallet
+      if (email === 'admin@illinois.edu') {
+        wallet = utils.HDNode.fromMnemonic(envVars.adminMnemonic)
+      } else {
+        wallet = utils.HDNode.fromMnemonic(walletData.seed_phrase)
+      }
+
       req.user.wallet = wallet
     }
 
