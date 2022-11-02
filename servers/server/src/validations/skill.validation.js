@@ -13,3 +13,9 @@ export const mint = {
     credential_id: Joi.number().required(),
   },
 }
+
+export const addCredentialType = {
+  body:{
+    type: Joi.string().required()
+  }
+}

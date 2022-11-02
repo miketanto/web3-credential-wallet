@@ -23,7 +23,7 @@ if (envVars.env !== 'test') {
 }
 
 // sync database (create tables if not exist)
-sequelize.sync({force:true})
+sequelize.sync()
 
 // set security HTTP headers
 app.use(helmet())
@@ -85,6 +85,8 @@ app.use(errorHandler)
 //
 // Start app server
 //
+export const testapp = app
+
 const server = app.listen(envVars.port || 3000, () => {
   logger.info(`Listening to port ${envVars.port}`)
 })

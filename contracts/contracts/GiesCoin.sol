@@ -20,7 +20,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
     // note that admins can not be blacklisted - j remove them as admin, and then blacklist them
     
-    function pairStudentIdAddress (bytes32 _studentId) external;
+    function pairStudentIdAddress (bytes32 _studentId) external; 
 
     function studentIdToAddress (bytes32 _studentId) external view returns (address[] memory);
 
@@ -62,7 +62,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
      *
      * 
      */
-    function transfer(address recipient, uint256 amount) isNotBlacklisted(msg.sender,recipient) public override returns (bool) {
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
         _transfer(_msgSender(), recipient, amount);
         return true;
     }

@@ -1,5 +1,6 @@
 import httpStatus from 'http-status'
 import { providers, utils } from 'ethers'
+import { SkillsClearance, SkillsWallet } from '../contracts'
 
 import { provider } from '../constants'
 import { Skills, Wallets } from '../models'
@@ -13,6 +14,106 @@ const {
 } = HHContract['80001'].mumbai.contracts.SkillsWallet
 
 // const provider = new providers.JsonRpcProvider('https://rpc-mumbai.maticvigil.com')
+
+export async function createCredentialType(options) {
+  try {
+    const { signer, type } = options
+    const signedSkillsClearance = SkillsClearance.connect(signer)
+    let tx
+    try {
+      tx = await signedSkillsClearance.createCredentialType(type)
+    } catch (e) {
+      if (e instanceof ApiError) throw e
+      throw new ApiError(503, 'Blockchain Service Error')
+    }
+    const receipt = await tx.wait()
+    const { address } = signer
+    return ({ address, type })
+  } catch (e) {
+    if (e instanceof ApiError) throw e
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Internal server error')
+  }
+}
+
+export async function addHead(options) {
+  try {
+    const { signer, head, type } = options
+    const signedSkillsClearance = SkillsClearance.connect(signer)
+    let tx
+    try {
+      tx = await signedSkillsClearance.addHead(head, type)
+    } catch (e) {
+      if (e instanceof ApiError) throw e
+      throw new ApiError(503, 'Blockchain Service Error')
+    }
+    const receipt = await tx.wait()
+    const { address } = signer
+    return ({ address, head, type })
+  } catch (e) {
+    if (e instanceof ApiError) throw e
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Internal server error')
+  }
+}
+
+export async function addHeadClearance(options) {
+  try {
+    const { signer, head, type } = options
+    const signedSkillsClearance = SkillsClearance.connect(signer)
+    let tx
+    try {
+      tx = await signedSkillsClearance.addHeadClearance(head, type)
+    } catch (e) {
+      if (e instanceof ApiError) throw e
+      throw new ApiError(503, 'Blockchain Service Error')
+    }
+    const receipt = await tx.wait()
+    const { address } = signer
+    return ({ address, head, type })
+  } catch (e) {
+    if (e instanceof ApiError) throw e
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Internal server error')
+  }
+}
+
+export async function addCredentialer(options) {
+  try {
+    const { signer, credentialer, type } = options
+    const signedSkillsClearance = SkillsClearance.connect(signer)
+    let tx
+    try {
+      tx = await signedSkillsClearance.addCredentialer(credentialer, type)
+    } catch (e) {
+      if (e instanceof ApiError) throw e
+      throw new ApiError(503, 'Blockchain Service Error')
+    }
+    const receipt = await tx.wait()
+    const { address } = signer
+    return ({ address, credentialer, type })
+  } catch (e) {
+    if (e instanceof ApiError) throw e
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Internal server error')
+  }
+}
+
+export async function addCredentialerClearance(options) {
+  try {
+    const { signer, credentialer, type } = options
+    const signedSkillsClearance = SkillsClearance.connect(signer)
+    let tx
+    try {
+      tx = await signedSkillsClearance.addCredentialerClearance(credentialer, type)
+    } catch (e) {
+      if (e instanceof ApiError) throw e
+      throw new ApiError(503, 'Blockchain Service Error')
+    }
+    const receipt = await tx.wait()
+    const { address } = signer
+    return ({ address, credentialer, type })
+  } catch (e) {
+    if (e instanceof ApiError) throw e
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Internal server error')
+  }
+}
 
 export async function listAll() {
   try {
