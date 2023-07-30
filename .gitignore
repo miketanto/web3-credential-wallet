@@ -147,3 +147,5 @@ cython_debug/
 # Node
 node_modules/
 server/_experiments/
+./servers/content.env.dev
+./websites/contents.env
